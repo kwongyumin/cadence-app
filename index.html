@@ -22,8 +22,11 @@
   --radius:10px; --maxw:960px;
   --space-1:8px; --space-2:16px; --space-3:24px; --space-4:40px; --space-5:64px;
   --pixel:'Press Start 2P', ui-monospace, monospace;
-  --sans:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',
-    -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  /* 폰트 폴백은 글자 하나 단위로 일어난다 — 순서가 곧 '어느 글자를 무엇으로 그리나'다.
+     윈도우에서 Segoe UI 를 Malgun Gothic 앞에 둬야 영문은 Segoe UI, 한글은 Malgun 이 된다.
+     반대로 두면 영문까지 Malgun 으로 그려져 숫자·영문이 눈에 띄게 투박해진다. */
+  --sans:'Pretendard','Apple SD Gothic Neo','Segoe UI','Malgun Gothic',
+    -apple-system,BlinkMacSystemFont,system-ui,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -103,14 +106,20 @@ section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
 .sec__head p{margin-top:10px;color:var(--dim)}
 
 /* ── 다운로드 ── */
-.dl{display:grid;gap:var(--space-2);grid-template-columns:repeat(auto-fit,minmax(208px,1fr))}
-/* 설명 줄 수가 카드마다 달라 버튼 높이가 들쭉날쭉했다 — 아래로 밀어 붙인다 */
+/* auto-fit 은 폭이 애매하면 4장을 3+1 로 쪼갠다. 열 수를 직접 정해 그 구간을 없앤다.
+   맥 2장 / 윈도우 2장이라 2열도 의미 있는 묶음이 된다. */
+.dl{display:grid;gap:var(--space-2);grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1000px){ .dl{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:520px){ .dl{grid-template-columns:1fr} }
 .card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);
-  padding:var(--space-3);display:flex;flex-direction:column}
+  padding:var(--space-3)}
 .card h3{font-size:17px;display:flex;align-items:center;gap:8px}
 .card p{margin-top:8px;color:var(--dim);font-size:14px}
-.card p{flex:1}   /* 본문이 남는 높이를 먹어 버튼이 바닥에 정렬된다 */
-.card .btn{margin-top:var(--space-2);width:100%}
+/* 다운로드 카드만 — 설명 줄 수가 카드마다 달라 버튼 높이가 들쭉날쭉했다.
+   본문이 남는 높이를 먹어 버튼이 바닥에 정렬된다. `.card` 는 기능 카드도 쓰므로 범위를 좁힌다. */
+.dl .card{display:flex;flex-direction:column}
+.dl .card p{flex:1}
+.dl .card .btn{margin-top:var(--space-2);width:100%}
 .tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;
   background:var(--bg3);color:var(--dim)}
 .tag--soon{background:rgba(216,161,60,.18);color:var(--grow)}
@@ -119,7 +128,8 @@ section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
 
 /* ── 단계 ── */
 .steps{counter-reset:s;display:grid;gap:var(--space-2);
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));list-style:none;padding:0;margin:0}
+  grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
+@media (max-width:760px){ .steps{grid-template-columns:1fr} }
 .steps li{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);
   padding:var(--space-3);position:relative}
 .steps li::before{counter-increment:s;content:counter(s);
@@ -128,14 +138,18 @@ section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
 .steps p{margin-top:8px;color:var(--dim);font-size:14px}
 
 /* ── 기능 ── */
-.feat{display:grid;gap:var(--space-2);grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.feat{display:grid;gap:var(--space-2);grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:860px){ .feat{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){ .feat{grid-template-columns:1fr} }
 .feat h3{font-size:16px}
 .feat p{margin-top:8px;color:var(--dim);font-size:14px}
 .feat .ico{width:26px;height:26px;display:block;margin-bottom:12px;color:var(--lcd)}
 
 /* ── 도감 ── */
 .dex{list-style:none;padding:0;margin:0;display:grid;gap:var(--space-2);
-  grid-template-columns:repeat(auto-fit,minmax(196px,1fr))}
+  grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1000px){ .dex{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:520px){ .dex{grid-template-columns:1fr} }
 .species{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);
   padding:var(--space-2) var(--space-3)}
 .species__name{display:block;font-size:13px;color:var(--dim);margin-bottom:8px}
@@ -158,23 +172,15 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:spac
   align-items:center}
 footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
 
-/* ── 모션 — 요소 한 종류만, 끌 수 있게 ──
-   ⚠ .reveal 을 기본으로 숨기면 JS 가 없거나 크롤러가 올 때 본문이 통째로 사라진다.
-   그래서 **기본은 보이는 상태**이고, JS 가 돌고 모션이 허용될 때만 <html class="anim"> 이
-   붙어 그때부터 숨겼다가 나타난다. */
-.anim .reveal{opacity:0;transform:translateY(12px);transition:opacity .35s ease, transform .35s ease}
-.anim .reveal.in{opacity:1;transform:none}
+/* 스크롤 등장 애니메이션은 걷어냈다 (2026-09-08).
+   opacity:0 로 숨겼다가 IntersectionObserver 로 되살리는 방식인데, 관찰이 한 번이라도
+   빗나가면 **본문이 통째로 안 보인다.** 실제로 그렇게 보였다는 지적을 받았다.
+   가이드·다운로드 페이지에서 이 장식이 주는 값보다 실패 비용이 훨씬 크다.
+   지금 이 페이지에는 JS 가 하나도 없다 — 못 깨진다. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .anim .reveal{opacity:1;transform:none}
 }
 </style>
-<script>
-// 모션을 켤 수 있을 때만 .reveal 을 숨긴다. 이 줄이 없으면(JS 차단·크롤러) 본문은 그냥 보인다.
-if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  document.documentElement.className += ' anim';
-}
-</script>
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -225,27 +231,27 @@ if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').
 
 <section id="download">
   <div class="wrap">
-    <div class="sec__head reveal">
+    <div class="sec__head">
       <h2>내려받기</h2>
       <p>버전 0.1.0. 설치 파일만 받으면 됩니다. 계정도, 결제도 없습니다.</p>
     </div>
     <div class="dl">
-      <div class="card reveal">
+      <div class="card">
         <h3>macOS <span class="tag">Apple Silicon</span></h3>
         <p>M1 이후 맥. macOS 12 이상.</p>
         <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0-arm64.dmg">.dmg 내려받기</a>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <h3>macOS <span class="tag">Intel</span></h3>
         <p>인텔 맥. macOS 12 이상.</p>
         <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0.dmg">.dmg 내려받기</a>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <h3>Windows <span class="tag">64-bit</span></h3>
         <p>대부분의 윈도우 PC. Windows 10 이상.</p>
         <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0-x64-setup.exe">설치 파일 내려받기</a>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <h3>Windows <span class="tag">ARM</span></h3>
         <p>Snapdragon 등 ARM 윈도우. 아니면 왼쪽을 받으세요.</p>
         <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0-arm64-setup.exe">설치 파일 내려받기</a>
@@ -261,18 +267,18 @@ if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').
 
 <section id="how">
   <div class="wrap">
-    <div class="sec__head reveal">
+    <div class="sec__head">
       <h2>세 단계면 끝납니다</h2>
       <p>설치하고 나면 손이 갈 일이 거의 없습니다. 알을 고르는 것만 오늘의 선택입니다.</p>
     </div>
     <ol class="steps">
-      <li class="reveal"><h3>목표 시간을 정한다</h3>
+      <li><h3>목표 시간을 정한다</h3>
         <p>4시간부터 10시간까지. 오늘 이만큼 일하면 캐릭터가 다 자랍니다.
           부화 전에는 언제든 바꿀 수 있습니다.</p></li>
-      <li class="reveal"><h3>알을 고른다</h3>
+      <li><h3>알을 고른다</h3>
         <p>알이 곧 동물입니다. 밤빛 알은 곰, 노을 알은 여우가 됩니다.
           직접 그림을 넣는 <strong>빈 알</strong> 도 두 개 있습니다.</p></li>
-      <li class="reveal"><h3>그냥 일한다</h3>
+      <li><h3>그냥 일한다</h3>
         <p>키보드와 마우스가 멈추면 알아서 쉬는 것으로 칩니다.
           목표의 35% 를 채우면 알이 깨어나고, 100% 를 채우면 다 자랍니다.</p></li>
     </ol>
@@ -281,11 +287,11 @@ if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').
 
 <section id="species">
   <div class="wrap">
-    <div class="sec__head reveal">
+    <div class="sec__head">
       <h2>알 → 새끼 → 어른</h2>
       <p>내장 동물 네 종에 직접 만드는 두 자리. 하루가 끝나면 도감과 기록에 남습니다.</p>
     </div>
-    <ul class="dex reveal">
+    <ul class="dex">
         <li class="species">
           <span class="species__name">곰</span>
           <span class="chain">
@@ -334,45 +340,45 @@ if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').
 
 <section id="features">
   <div class="wrap">
-    <div class="sec__head reveal">
+    <div class="sec__head">
       <h2>무엇을 해 주나요</h2>
       <p>시간을 재는 것 말고도, 하루가 어떻게 흘러갔는지를 남깁니다.</p>
     </div>
     <div class="feat">
-      <div class="card reveal">
+      <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         <h3>자동 시간 측정</h3>
         <p>타이머를 누르지 않습니다. 입력이 멈추면 휴식, 회의 앱이 앞에 오면 회의로 칩니다.
           최장 연속·휴식 횟수·야간 시간이 함께 쌓입니다.</p>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M4 19V5a1 1 0 0 1 1-1h9l6 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M14 4v6h6"/></svg>
         <h3>내 캐릭터 만들기</h3>
         <p>빈 알을 고르면 새끼·어른 그림을 직접 넣을 수 있습니다.
           이름도 하나만 정하면 <em>펭귄 알 → 새끼펭귄 → 펭귄</em> 으로 한꺼번에 붙습니다.</p>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M20 6 9 17l-5-5"/></svg>
         <h3>Flow 업무 연동</h3>
         <p>오늘 끝낸 업무만큼 진화가 앞당겨집니다. 새 업무와 멘션이 오면 메뉴바 아이콘에
           점이 붙고 알림이 옵니다.</p>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
         <h3>캘린더</h3>
         <p>맥 로컬 캘린더나 .ics 구독 주소를 물리면 다음 일정과 회의 중 여부를 알려 줍니다.</p>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M3 17h18M6 17V9m4 8V5m4 12v-6m4 6v-9"/></svg>
         <h3>기록과 도감</h3>
         <p>하루가 끝나면 등급(★)과 성격이 붙어 보관됩니다. 만난 종은 도감에 남습니다.</p>
       </div>
-      <div class="card reveal">
+      <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M12 3v4M5.6 5.6l2.8 2.8M3 12h4M5.6 18.4l2.8-2.8M12 21v-4M18.4 18.4l-2.8-2.8M21 12h-4M18.4 5.6l-2.8 2.8"/></svg>
         <h3>바탕화면 캐릭터</h3>
@@ -384,36 +390,36 @@ if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').
 
 <section id="faq">
   <div class="wrap">
-    <div class="sec__head reveal"><h2>자주 묻는 것</h2></div>
+    <div class="sec__head"><h2>자주 묻는 것</h2></div>
     <div class="faq">
-      <details class="reveal"><summary>내 기록이 어디로 가나요?</summary>
+      <details><summary>내 기록이 어디로 가나요?</summary>
         <p>내 컴퓨터에만 저장됩니다. 서버로 보내지 않고, 계정도 만들지 않습니다.
           Flow 를 연결하면 그 자격증명은 OS 의 보안 저장소에 암호화해 둡니다.</p></details>
-      <details class="reveal"><summary>회사 노트북에 깔아도 되나요?</summary>
+      <details><summary>회사 노트북에 깔아도 되나요?</summary>
         <p>보안 정책은 회사마다 다르니 관리 부서에 확인하시는 편이 안전합니다.
           Cadence 자체는 화면 내용을 읽거나 키 입력을 기록하지 않습니다 —
           <strong>입력이 있었는지 없었는지</strong>와 어떤 앱이 앞에 있는지만 봅니다.</p></details>
-      <details class="reveal"><summary>무엇을 했는지도 기록되나요?</summary>
+      <details><summary>무엇을 했는지도 기록되나요?</summary>
         <p>아닙니다. 얼마나 오래, 어떤 리듬으로 일했는지만 남습니다.
           문서 제목이나 대화 내용은 다루지 않습니다.</p></details>
-      <details class="reveal"><summary>자정을 넘기면요?</summary>
+      <details><summary>자정을 넘기면요?</summary>
         <p>그날 하루가 통째로 기록에 보관되고 새 알이 시작됩니다.
           앱이 꺼져 있는 사이에 날짜가 넘어가도 보관됩니다.</p></details>
-      <details class="reveal"><summary>목표를 잘못 잡았습니다.</summary>
+      <details><summary>목표를 잘못 잡았습니다.</summary>
         <p>부화 전에는 자유롭게 바꿀 수 있습니다. 부화 후에는 올리기만 됩니다 —
           이미 자란 캐릭터가 되돌아가지 않게 하기 위해서입니다.</p></details>
-      <details class="reveal"><summary>윈도우 작업표시줄에 아이콘이 안 보입니다.</summary>
+      <details><summary>윈도우 작업표시줄에 아이콘이 안 보입니다.</summary>
         <p>윈도우는 새로 설치한 앱의 트레이 아이콘을 <strong>숨겨진 아이콘</strong> 안에 넣습니다.
           작업표시줄 오른쪽의 <strong>﹀</strong> 를 누르면 곰 아이콘이 있습니다.
           매번 두 번 누르기 번거로우면
           <strong>설정 → 개인 설정 → 작업 표시줄 → 기타 시스템 트레이 아이콘</strong> 에서
           Cadence 를 켜 두세요. 그 뒤로는 작업표시줄에 그대로 붙어 있습니다.</p></details>
-      <details class="reveal"><summary>Windows 에서도 똑같이 동작하나요?</summary>
+      <details><summary>Windows 에서도 똑같이 동작하나요?</summary>
         <p>캐릭터·시간 기록·도감은 같습니다. 다만 <strong>캘린더</strong>는 다릅니다 —
           맥은 시스템 캘린더를 바로 읽지만, 윈도우는 캘린더의
           <code>.ics</code> 구독 주소를 한 번 넣어 주셔야 합니다.
           패널의 <strong>캘린더 → 연결</strong> 에서 넣을 수 있습니다.</p></details>
-      <details class="reveal"><summary>설치할 때 경고가 뜹니다.</summary>
+      <details><summary>설치할 때 경고가 뜹니다.</summary>
         <p>개발자 서명을 아직 받지 않아서입니다(맥 <code>확인되지 않은 개발자</code>,
           윈도우 <code>PC를 보호했습니다</code>). 위 내려받기 칸 아래의 안내대로
           한 번만 통과시키면 그 뒤로는 뜨지 않습니다.</p></details>
@@ -429,24 +435,5 @@ if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').
   </div>
 </footer>
 
-<script>
-// 요소 한 종류(.reveal)만 움직인다. 모션을 줄여 달라고 한 사용자에게는 아무것도 하지 않는다.
-(function () {
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var items = document.querySelectorAll('.reveal');
-  if (reduce.matches || !('IntersectionObserver' in window)) {
-    items.forEach(function (el) { el.classList.add('in'); });
-    return;
-  }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.classList.add('in');
-      io.unobserve(e.target);
-    });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  items.forEach(function (el) { io.observe(el); });
-})();
-</script>
 </body>
 </html>
