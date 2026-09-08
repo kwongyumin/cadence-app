@@ -135,14 +135,21 @@ section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
   background:var(--bg3);color:var(--dim)}
 .tag--soon{background:rgba(216,161,60,.18);color:var(--grow)}
 .note{margin-top:var(--space-3);font-size:13.5px;color:var(--faint);max-width:70ch}
-code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12.5px;color:var(--dim)}
+/* code 는 UA 기본이 monospace 라 한글이 들어가면 띄어쓰기가 두 칸처럼 벌어진다.
+   따옴표 대신 쓰는 '화면에 뜨는 문구'는 본문 글꼴로 두고, 진짜 명령어만 monospace 로. */
+code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:.92em;
+  color:var(--dim);font-family:inherit}
+code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em}
+/* 버튼·메뉴 이름은 줄 끝에서 갈라지면 안 된다 — '확인 / 없이 열기' 처럼 읽힌다 */
+.ui{white-space:nowrap;font-weight:700;color:var(--ink)}
 
 /* ── 설치가 막히면 ── */
 /* 서명 없는 앱은 두 OS 모두 한 번씩 막는다. 그 순간 사용자는 "고장난 파일"로 읽고 그냥 닫는다.
    그래서 다운로드 바로 아래에, 각 OS 의 버튼 이름을 그대로 적어 둔다. */
-.guard{margin-top:var(--space-3);background:var(--bg2);border:1px solid var(--line);
-  border-radius:var(--radius);padding:var(--space-3)}
-.guard h3{font-size:16px;margin-bottom:8px}
+/* 대부분의 사용자는 여기까지 안 온다. 펼쳐 두면 다운로드 버튼 아래를 통째로 먹으므로 접어 둔다. */
+.guard{margin-top:var(--space-3)}
+.guard>summary{font-size:14.5px}
+.guard__body{padding:0 var(--space-3) var(--space-3)}
 .guard__why{color:var(--dim);font-size:14px;max-width:72ch}
 .guard__grid{display:grid;gap:var(--space-3);margin-top:var(--space-3);
   grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -153,10 +160,14 @@ code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12.5px;co
 .guard strong{color:var(--ink)}
 .dimline{color:var(--faint);font-size:12.5px}
 .dimline a{display:inline-flex;align-items:center;min-height:44px;padding:0 2px}
-.sums{margin-top:var(--space-3)}
-.sums summary{font-size:13.5px;font-weight:600;padding:12px 0;min-height:0}
-.sums summary::after{margin-left:10px;font-size:16px}
+.sums{margin-top:var(--space-4);padding-top:var(--space-3);border-top:1px solid var(--line)}
+.sums h4{margin-bottom:8px}
 .sums p{padding:0 0 10px;color:var(--dim);font-size:13.5px}
+/* 명령어는 문장 속에 섞으면 줄 끝에서 끊겨 읽기 어렵다. 한 줄씩 떼어 놓는다. */
+.cmds{margin:0 0 var(--space-3);border-collapse:collapse;display:block;overflow-x:auto}
+.cmds th{text-align:left;font-weight:600;color:var(--dim);font-size:13px;
+  padding:3px 14px 3px 0;white-space:nowrap;vertical-align:baseline}
+.cmds td{white-space:nowrap;padding:3px 0}
 .sums__t{width:100%;border-collapse:collapse;font-size:12.5px;
   display:block;overflow-x:auto}   /* 좁은 화면에서 표만 가로로 넘긴다 */
 .sums__t th{text-align:left;font-weight:600;color:var(--dim);padding:4px 12px 4px 0;white-space:nowrap}
@@ -296,40 +307,42 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0-arm64-setup.exe">설치 파일 내려받기</a>
       </div>
     </div>
-    <div class="guard">
-      <h3>설치가 막히면</h3>
-      <p class="guard__why">아직 <strong>개발자 서명</strong>을 받지 않아서 두 OS 모두 한 번씩 확인을 요구합니다.
-        서명은 유료 인증서가 있어야 하고, 없으면 이 절차를 피할 방법이 없습니다.
-        한 번만 통과시키면 그 뒤로는 묻지 않습니다.</p>
+    <details class="guard">
+      <summary>설치가 막히면 — 두 OS 모두 한 번씩 경고가 뜹니다</summary>
+      <div class="guard__body">
+      <p class="guard__why"><strong>개발자 서명</strong>이 없어서 두 OS 모두 한 번씩 확인을 요구합니다.
+        서명에는 유료 인증서가 필요합니다. 한 번만 통과시키면 그 뒤로는 묻지 않습니다.</p>
       <div class="guard__grid">
         <div>
           <h4>Windows</h4>
           <ol>
-            <li>브라우저가 <code>일반적으로 다운로드되지 않는 파일</code> 이라고 하면 → <strong>유지</strong></li>
-            <li>실행했을 때 <code>Windows의 PC 보호</code> 창이 뜨면 →
-              <strong>추가 정보</strong> → <strong>실행</strong>
-              <br><span class="dimline">「실행」 버튼은 「추가 정보」를 눌러야 나타납니다</span></li>
-            <li>그래도 안 되면 파일 <strong>우클릭 → 속성</strong> → 맨 아래
-              <strong>보안: 차단 해제</strong> 체크 → <strong>확인</strong> 후 다시 실행</li>
-            <li>백신이 지웠다면 격리(검역) 목록에서 복원</li>
+            <li>내려받을 때 경고가 뜨면 → <span class="ui">유지</span></li>
+            <li>실행하면 뜨는 <code>Windows의 PC 보호</code> 창에서
+              <span class="ui">추가 정보</span> → <span class="ui">실행</span>
+              <br><span class="dimline">「실행」은 「추가 정보」를 눌러야 나타납니다</span></li>
+            <li>그래도 안 되면 파일 <span class="ui">우클릭</span> →
+              <span class="ui">속성</span> → 아래쪽 <span class="ui">차단 해제</span> 체크</li>
+            <li>백신이 지웠다면 격리 목록에서 복원</li>
           </ol>
         </div>
         <div>
           <h4>macOS</h4>
           <ol>
-            <li><code>확인되지 않은 개발자</code> 라고 막으면 →
-              파인더에서 앱을 <strong>우클릭 → 열기</strong></li>
-            <li>같은 창이 다시 뜨면 이번엔 <strong>열기</strong> 버튼이 있습니다</li>
-            <li>그래도 막히면 <strong>시스템 설정 → 개인정보 보호 및 보안</strong> →
-              맨 아래 <strong>확인 없이 열기</strong></li>
+            <li><code>확인되지 않은 개발자</code> 로 막히면 앱을
+              <span class="ui">우클릭</span> → <span class="ui">열기</span></li>
+            <li>같은 창이 다시 뜨면 이번엔 <span class="ui">열기</span> 가 있습니다</li>
+            <li>그래도 막히면 <span class="ui">시스템 설정</span> →
+              <span class="ui">개인정보 보호 및 보안</span> → <span class="ui">확인 없이 열기</span></li>
           </ol>
         </div>
       </div>
-      <details class="sums">
-        <summary>받은 파일이 온전한지 확인하기 (SHA-256)</summary>
-        <p>파일이 중간에 깨졌는지 확인할 때만 쓰면 됩니다.
-          윈도우 PowerShell 에서 <code>Get-FileHash 파일이름 -Algorithm SHA256</code>,
-          맥 터미널에서 <code>shasum -a 256 파일이름</code> 을 실행해 아래와 맞춰 보세요.</p>
+      <div class="sums">
+        <h4>받은 파일이 온전한지 확인하기 (SHA-256)</h4>
+        <p>파일이 중간에 깨졌는지 확인할 때만 쓰면 됩니다. 아래를 실행해 값이 같은지 보세요.</p>
+        <table class="cmds">
+          <tr><th>윈도우 PowerShell</th><td><code class="cmd">Get-FileHash 파일이름 -Algorithm SHA256</code></td></tr>
+          <tr><th>맥 터미널</th><td><code class="cmd">shasum -a 256 파일이름</code></td></tr>
+        </table>
         <table class="sums__t">
           <tr><th>Cadence-0.1.0-x64-setup.exe</th><td>35993ea7…6b5ed0b9</td></tr>
           <tr><th>Cadence-0.1.0-arm64-setup.exe</th><td>6dc4c3a5…02d7fbcb</td></tr>
@@ -337,8 +350,9 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           <tr><th>Cadence-0.1.0.dmg</th><td>db766e6f…dea699b2</td></tr>
         </table>
         <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.0">릴리스 페이지</a>에 있습니다.</p>
-      </details>
-    </div>
+      </div>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -486,16 +500,17 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         <p>부화 전에는 자유롭게 바꿀 수 있습니다. 부화 후에는 올리기만 됩니다 —
           이미 자란 캐릭터가 되돌아가지 않게 하기 위해서입니다.</p></details>
       <details><summary>윈도우 작업표시줄에 아이콘이 안 보입니다.</summary>
-        <p>윈도우는 새로 설치한 앱의 트레이 아이콘을 <strong>숨겨진 아이콘</strong> 안에 넣습니다.
-          작업표시줄 오른쪽의 <strong>﹀</strong> 를 누르면 곰 아이콘이 있습니다.
+        <p>윈도우는 새로 설치한 앱의 트레이 아이콘을 <span class="ui">숨겨진 아이콘</span> 안에 넣습니다.
+          작업표시줄 오른쪽의 <span class="ui">﹀</span> 를 누르면 곰 아이콘이 있습니다.
           매번 두 번 누르기 번거로우면
-          <strong>설정 → 개인 설정 → 작업 표시줄 → 기타 시스템 트레이 아이콘</strong> 에서
-          Cadence 를 켜 두세요. 그 뒤로는 작업표시줄에 그대로 붙어 있습니다.</p></details>
+          <span class="ui">설정</span> → <span class="ui">개인 설정</span> →
+          <span class="ui">작업 표시줄</span> → <span class="ui">기타 시스템 트레이 아이콘</span>
+          에서 Cadence 를 켜 두세요. 그 뒤로는 작업표시줄에 그대로 붙어 있습니다.</p></details>
       <details><summary>Windows 에서도 똑같이 동작하나요?</summary>
         <p>캐릭터·시간 기록·도감은 같습니다. 다만 <strong>캘린더</strong>는 다릅니다 —
           맥은 시스템 캘린더를 바로 읽지만, 윈도우는 캘린더의
-          <code>.ics</code> 구독 주소를 한 번 넣어 주셔야 합니다.
-          패널의 <strong>캘린더 → 연결</strong> 에서 넣을 수 있습니다.</p></details>
+          <code class="cmd">.ics</code> 구독 주소를 한 번 넣어 주셔야 합니다.
+          패널의 <span class="ui">캘린더</span> → <span class="ui">연결</span> 에서 넣을 수 있습니다.</p></details>
       <details><summary>설치할 때 경고가 뜹니다.</summary>
         <p>개발자 서명을 아직 받지 않아서입니다(맥 <code>확인되지 않은 개발자</code>,
           윈도우 <code>PC를 보호했습니다</code>). 위 내려받기 칸 아래의 안내대로
