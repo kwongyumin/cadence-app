@@ -235,6 +235,8 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em
 .ntc__toast b{display:block;font-size:12px;color:var(--ink)}
 .ntc__toast span{display:block;margin-top:3px;font-size:11px;color:var(--dim)}
 
+/* 시간 규칙과 기능 카드를 한 절에 넣었으므로 그 사이를 가르는 소제목이 필요하다 */
+.sub{margin:var(--space-3) 0 var(--space-2);font-size:clamp(17px,2.2vw,20px)}
 .feat{display:grid;gap:var(--space-2);grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:860px){ .feat{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:560px){ .feat{grid-template-columns:1fr} }
@@ -291,7 +293,6 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
     <nav aria-label="주요">
       <a href="#download">내려받기</a>
       <a href="#how" class="hide-sm">시작하기</a>
-      <a href="#time" class="hide-sm">시간 계산</a>
       <a href="#features" class="hide-sm">기능</a>
       <a href="#faq" class="hide-sm">FAQ</a>
     </nav>
@@ -334,28 +335,28 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
   <div class="wrap">
     <div class="sec__head">
       <h2>내려받기</h2>
-      <p>버전 0.1.7. 설치 파일만 받으면 됩니다. 계정도, 결제도 없습니다.</p>
+      <p>버전 0.1.8. 설치 파일만 받으면 됩니다. 계정도, 결제도 없습니다.</p>
     </div>
     <div class="dl">
       <div class="card">
         <h3>macOS <span class="tag">Apple Silicon</span></h3>
         <p>M1 이후 맥. macOS 12 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.7-arm64.dmg">.dmg 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.8-arm64.dmg">.dmg 내려받기</a>
       </div>
       <div class="card">
         <h3>macOS <span class="tag">Intel</span></h3>
         <p>인텔 맥. macOS 12 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.7.dmg">.dmg 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.8.dmg">.dmg 내려받기</a>
       </div>
       <div class="card">
         <h3>Windows <span class="tag">64-bit</span></h3>
         <p>대부분의 윈도우 PC. Windows 10 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.7-x64-setup.exe">설치 파일 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.8-x64-setup.exe">설치 파일 내려받기</a>
       </div>
       <div class="card">
         <h3>Windows <span class="tag">ARM</span></h3>
         <p>Snapdragon 같은 ARM 칩을 쓰는 윈도우. 잘 모르겠으면 64-bit 를 받으세요.</p>
-        <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.7-arm64-setup.exe">설치 파일 내려받기</a>
+        <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.8-arm64-setup.exe">설치 파일 내려받기</a>
       </div>
     </div>
     <details class="guard">
@@ -395,12 +396,12 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           <tr><th>맥 터미널</th><td><code class="cmd">shasum -a 256 파일이름</code></td></tr>
         </table>
         <table class="sums__t">
-          <tr><th>Cadence-0.1.7-x64-setup.exe</th><td>acce0f55…2d77a3a6</td></tr>
-          <tr><th>Cadence-0.1.7-arm64-setup.exe</th><td>9693d2ef…bea7a695</td></tr>
-          <tr><th>Cadence-0.1.7-arm64.dmg</th><td>680b1794…8c35dacc</td></tr>
-          <tr><th>Cadence-0.1.7.dmg</th><td>ffc9064e…e097ada0</td></tr>
+          <tr><th>Cadence-0.1.8-x64-setup.exe</th><td>388172a6…6338869f</td></tr>
+          <tr><th>Cadence-0.1.8-arm64-setup.exe</th><td>1b066426…c5d1dc0a</td></tr>
+          <tr><th>Cadence-0.1.8-arm64.dmg</th><td>86d86a4b…24be4993</td></tr>
+          <tr><th>Cadence-0.1.8.dmg</th><td>a9f7254c…b4dc7b9f</td></tr>
         </table>
-        <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.7">릴리스 페이지</a>에 있습니다.</p>
+        <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.8">릴리스 페이지</a>에 있습니다.</p>
       </div>
       </div>
     </details>
@@ -421,35 +422,6 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
       <li><h3>그냥 일한다</h3>
         <p>목표의 35% 를 채우면 알이 깨어나고, 100% 를 채우면 다 자랍니다.</p></li>
     </ol>
-  </div>
-</section>
-
-<section id="time">
-  <div class="wrap">
-    <div class="sec__head">
-      <h2>시간은 이렇게 쌓입니다</h2>
-      <p>타이머를 켜고 끄지 않습니다. 키보드나 마우스를 쓰고 있으면 그게 일하는 신호입니다.
-        무엇을 눌렀는지는 보지 않고, 마지막 입력에서 얼마나 지났는지만 봅니다.</p>
-    </div>
-    <table class="rules">
-      <tr><th>쌓입니다</th><td>마지막 입력에서 <b>1분</b> 안</td></tr>
-      <tr><th>멈춥니다</th><td>1분 넘게 아무 입력이 없을 때</td></tr>
-      <tr><th>휴식 1회</th><td>5분 넘게 자리를 비웠다가 돌아오면</td></tr>
-      <tr><th>세지 않음</th><td>노트북을 덮거나 절전으로 들어간 시간</td></tr>
-    </table>
-    <h3 class="sub">손이 멈춰도 쌓이는 때</h3>
-    <ul class="plain">
-      <li><b>캘린더에 일정이 잡혀 있는 동안.</b> 회의는 듣고만 있어도 일입니다.</li>
-      <li><b>소통 앱이 화면 앞에 있을 때.</b> 캘린더에 안 잡히는 급한 통화까지 챙깁니다.</li>
-      <li><b>AI 도구가 답을 만드는 동안.</b> 화면을 보고 기다리는 시간도 셉니다.
-        다만 자리를 비운 지 15분이 넘으면 멈춥니다. 밤새 돌려두고 잔 시간까지
-        일한 시간이 되면 곤란하니까요.
-        <br><span class="dimline">이것만은 끌 수 있습니다.
-        패널 아래 <span class="ui">시간 계산</span> 에서 체크를 풀면 됩니다.</span></li>
-    </ul>
-    <p class="note">업무를 하나 끝낼 때마다 목표의 5% 가 채워집니다.
-      업무 도구를 연결하면 오늘 완료한 것을 알아서 세어 옵니다.
-      밤 10시부터 새벽 5시 사이는 야간으로 따로 적힙니다.</p>
   </div>
 </section>
 
@@ -558,9 +530,31 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
 <section id="features">
   <div class="wrap">
     <div class="sec__head">
-      <h2>이런 것도 합니다</h2>
-      <p>시간을 재는 것 말고도, 하루가 어떻게 흘러갔는지를 남깁니다.</p>
+      <h2>시간은 이렇게 쌓입니다</h2>
+      <p>타이머를 켜고 끄지 않습니다. 키보드나 마우스를 쓰고 있으면 그게 일하는 신호입니다.
+        무엇을 눌렀는지는 보지 않고, 마지막 입력에서 얼마나 지났는지만 봅니다.</p>
     </div>
+    <table class="rules">
+      <tr><th>쌓입니다</th><td>마지막 입력에서 <b>1분</b> 안</td></tr>
+      <tr><th>멈춥니다</th><td>1분 넘게 아무 입력이 없을 때</td></tr>
+      <tr><th>휴식 1회</th><td>5분 넘게 자리를 비웠다가 돌아오면</td></tr>
+      <tr><th>세지 않음</th><td>노트북을 덮거나 절전으로 들어간 시간</td></tr>
+    </table>
+    <h3 class="sub">손이 멈춰도 쌓이는 때</h3>
+    <ul class="plain">
+      <li><b>캘린더에 일정이 잡혀 있는 동안.</b> 회의는 듣고만 있어도 일입니다.</li>
+      <li><b>소통 앱이 화면 앞에 있을 때.</b> 캘린더에 안 잡히는 급한 통화까지 챙깁니다.</li>
+      <li><b>AI 도구가 답을 만드는 동안.</b> 화면을 보고 기다리는 시간도 셉니다.
+        다만 자리를 비운 지 15분이 넘으면 멈춥니다. 밤새 돌려두고 잔 시간까지
+        일한 시간이 되면 곤란하니까요.
+        <br><span class="dimline">이것만은 끌 수 있습니다.
+        패널 아래 <span class="ui">시간 계산</span> 에서 체크를 풀면 됩니다.</span></li>
+    </ul>
+    <p class="note">업무를 하나 끝낼 때마다 목표의 5% 가 채워집니다.
+      업무 도구를 연결하면 오늘 완료한 것을 알아서 세어 옵니다.
+      밤 10시부터 새벽 5시 사이는 야간으로 따로 적힙니다.</p>
+  
+    <h3 class="sub">그리고 이런 것도 합니다</h3>
     <div class="feat">
       <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -674,7 +668,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
 
 <footer>
   <div class="wrap">
-    <span>Cadence 0.1.7 · 캐릭터 그림도 직접 그렸습니다</span>
+    <span>Cadence 0.1.8 · 캐릭터 그림도 직접 그렸습니다</span>
     <span><a href="https://github.com/kwongyumin/cadence-app">소스와 이슈</a></span>
   </div>
 </footer>
