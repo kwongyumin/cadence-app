@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence — 일한 시간이 캐릭터로 자라는 메뉴바 앱</title>
+<meta name="description" content="맥·윈도우 메뉴바에서 오늘 일한 시간을 조용히 재고, 목표를 채우면 픽셀 캐릭터가 자랍니다. Flow·캘린더 연동. 무료.">
+<meta property="og:title" content="Cadence — 일한 시간이 캐릭터로 자라는 메뉴바 앱">
+<meta property="og:description" content="메뉴바에서 오늘 일한 시간을 재고, 목표를 채우면 캐릭터가 자랍니다.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACZklEQVR4nO2ZsUqDMRDH/4q70EHwm0SkSFGwzsXBFxDFRfQROoqDDuIqjh3EWbei+AIO0l2nUkTEqYKD4BPUxSvp10u+y+Uqov1NIc0l/0tyuXwpMGbM/2ZCa1jOSj0qP3U/VP1Y9BFtRINu1xb7dc1WJ0qERR9EVONyVuq5g+ZptjqFAiz6cJmUNvytiD0tmjmCtoIPaR/SVZiSNCpifm6mXz74Lr+8vrPCrElywBXu+811RDL7sYhj4Kn7MeHOYEi8i7QdMQ7iIspZqXewtxY9EBcTLto8YLICp5f3OL28F7dvtjpsQGuycbIDO4fneGi3AUDkBAl/aLdxdHHdr9+uLQ5cLaSoHCjaDqntY4hygEtm1UoF1UolemDOTrMK6i0kndVRzj5gdJmjfU2n0/LqEmt/e3030N7XV0wwm1wlSIhPOLGxtW4x3ABmiYwTt1lvYLPeELXVYuKATzxXDtloiHIgfx8KCblp1NlyyDZ2/wNGMeDDJ9yS6C3ErYIFmtkHDGKAjsaftiVUDuRXQSPEtdHOPpDwLgQMP49IT5Z8QtOKBxIdIPIZ2ueI1ay7mDgA8I9VHBaz7pLciVR4HitHkmMg9aUhdSupj1EL8YD+S4xQvyqHxEuCOI92JUyvEkXHKP1ukcCI6C3km/2Y2yXX9kc/6n8TI/seGIUNx/9bgT93nQbSb6MpJP1LuZBND9Uf7+8G7U7Orobqnruf6mysWgGfeIAXWPTbQjatzsaqPOATT3BCQ44BeifUV4mQEyvzs2z948ub10a7jcxj4Ln7GbTz2WhjQH0X+h5waMkFQjQ2Xr4AFR5FXsA8LNcAAAAASUVORK5CYII=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* ── 토큰 ─────────────────────────────────────────────────────────
+   앱 실물 팔레트를 그대로 쓴다. 페이지에서 본 색과 앱에서 볼 색이 같아야 한다. */
+:root{
+  --bg:#12141a; --bg2:#191c22; --bg3:#20242c; --line:#2c313b;
+  --ink:#eef1f6; --dim:#aab2c0; --faint:#7b8494;
+  --lcd:#b9c94a; --lcd-ink:#141708; --accent:#7fa650; --grow:#d8a13c;
+  --radius:10px; --maxw:960px;
+  --space-1:8px; --space-2:16px; --space-3:24px; --space-4:40px; --space-5:64px;
+  --pixel:'Press Start 2P', ui-monospace, monospace;
+  --sans:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',
+    -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.65 var(--sans); letter-spacing:-.01em;
+  overflow-x:hidden;
+}
+img{max-width:100%;height:auto;image-rendering:pixelated}
+h1,h2,h3{line-height:1.3;margin:0}
+p{margin:0}
+a{color:var(--lcd)}
+:focus-visible{outline:3px solid var(--lcd);outline-offset:3px;border-radius:4px}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--space-3)}
+.skip{position:absolute;left:-9999px;top:0;background:var(--lcd);color:var(--lcd-ink);
+  padding:12px 18px;border-radius:0 0 var(--radius) 0;font-weight:700;z-index:50}
+.skip:focus{left:0}
+
+/* ── 헤더 ── */
+.top{position:sticky;top:0;z-index:20;background:rgba(18,20,26,.88);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top__in{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);
+  min-height:60px;max-width:var(--maxw);margin:0 auto;padding:0 var(--space-3)}
+/* 터치 목표 44px — 로고와 푸터 링크가 각각 28px·16px 이었다 */
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);
+  min-height:44px;padding:8px 6px;margin-left:-6px;border-radius:6px}
+.brand img{width:28px;height:28px}
+.brand b{font:400 13px/1 var(--pixel);letter-spacing:0}
+.top nav{display:flex;gap:4px;align-items:center}
+.top nav a{color:var(--dim);text-decoration:none;font-size:14px;
+  padding:12px 10px;min-height:44px;display:flex;align-items:center;border-radius:6px}
+.top nav a:hover{color:var(--ink);background:var(--bg3)}
+@media (max-width:640px){ .top nav a.hide-sm{display:none} }
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:12px 20px;border-radius:var(--radius);
+  font-weight:700;font-size:15px;text-decoration:none;border:1px solid transparent;
+  transition:transform .12s ease, background .12s ease, border-color .12s ease}
+.btn--primary{background:var(--lcd);color:var(--lcd-ink)}
+.btn--primary:hover{background:#c9d95e;transform:translateY(-1px)}
+.btn--ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn--ghost:hover{border-color:var(--dim);background:var(--bg2)}
+.btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed;pointer-events:none}
+
+/* ── 히어로 ── */
+.hero{padding:var(--space-5) 0 var(--space-4)}
+.hero__grid{display:grid;gap:var(--space-4);align-items:center;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+@media (max-width:760px){ .hero__grid{grid-template-columns:1fr} }
+.eyebrow{display:inline-block;font:400 10px/1 var(--pixel);color:var(--grow);
+  letter-spacing:0;margin-bottom:var(--space-2)}
+.hero h1{font-size:clamp(28px,5vw,44px);letter-spacing:-.02em;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--lcd)}
+.hero__sub{margin-top:var(--space-2);font-size:17px;color:var(--dim);max-width:44ch;text-wrap:pretty}
+.hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:var(--space-3)}
+.hero__meta{margin-top:14px;font-size:13px;color:var(--faint)}
+
+/* 화면 미리보기 — 실제 패널을 픽셀로 흉내낸 장식. 스크린샷 대신 가볍게 간다. */
+.shot{background:var(--bg2);border:1px solid var(--line);border-radius:14px;
+  padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.shot__bar{display:flex;gap:6px;margin-bottom:12px}
+.shot__bar i{width:9px;height:9px;border-radius:50%;background:var(--bg3);display:block}
+.shot__row{display:flex;align-items:center;gap:12px}
+.shot__pet{background:var(--lcd);border-radius:8px;padding:8px;flex:0 0 auto}
+.shot__pet img{display:block;width:64px;height:64px}
+.shot__t{font-weight:800;font-size:26px;letter-spacing:-.02em}
+.shot__t span{font-size:13px;font-weight:500;color:var(--faint)}
+.bar{height:8px;border-radius:999px;background:var(--bg3);overflow:hidden;margin-top:12px}
+.bar i{display:block;height:100%;width:63%;background:var(--grow);border-radius:999px}
+.shot__cap{margin-top:10px;font-size:12.5px;color:var(--faint)}
+
+/* ── 섹션 공통 ── */
+section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
+.sec__head{max-width:56ch;margin-bottom:var(--space-4)}
+.sec__head h2{font-size:clamp(21px,3.4vw,28px);letter-spacing:-.02em}
+.sec__head p{margin-top:10px;color:var(--dim)}
+
+/* ── 다운로드 ── */
+.dl{display:grid;gap:var(--space-2);grid-template-columns:repeat(auto-fit,minmax(208px,1fr))}
+/* 설명 줄 수가 카드마다 달라 버튼 높이가 들쭉날쭉했다 — 아래로 밀어 붙인다 */
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:var(--space-3);display:flex;flex-direction:column}
+.card h3{font-size:17px;display:flex;align-items:center;gap:8px}
+.card p{margin-top:8px;color:var(--dim);font-size:14px}
+.card p{flex:1}   /* 본문이 남는 높이를 먹어 버튼이 바닥에 정렬된다 */
+.card .btn{margin-top:var(--space-2);width:100%}
+.tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;
+  background:var(--bg3);color:var(--dim)}
+.tag--soon{background:rgba(216,161,60,.18);color:var(--grow)}
+.note{margin-top:var(--space-3);font-size:13.5px;color:var(--faint);max-width:70ch}
+.note code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12.5px;color:var(--dim)}
+
+/* ── 단계 ── */
+.steps{counter-reset:s;display:grid;gap:var(--space-2);
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));list-style:none;padding:0;margin:0}
+.steps li{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:var(--space-3);position:relative}
+.steps li::before{counter-increment:s;content:counter(s);
+  font:400 11px/1 var(--pixel);color:var(--grow);display:block;margin-bottom:12px}
+.steps h3{font-size:16px}
+.steps p{margin-top:8px;color:var(--dim);font-size:14px}
+
+/* ── 기능 ── */
+.feat{display:grid;gap:var(--space-2);grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.feat h3{font-size:16px}
+.feat p{margin-top:8px;color:var(--dim);font-size:14px}
+.feat .ico{width:26px;height:26px;display:block;margin-bottom:12px;color:var(--lcd)}
+
+/* ── 도감 ── */
+.dex{list-style:none;padding:0;margin:0;display:grid;gap:var(--space-2);
+  grid-template-columns:repeat(auto-fit,minmax(196px,1fr))}
+.species{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:var(--space-2) var(--space-3)}
+.species__name{display:block;font-size:13px;color:var(--dim);margin-bottom:8px}
+.chain{display:flex;align-items:center;gap:6px}
+.chain img{width:44px;height:44px}
+.chain__arrow{color:var(--faint)}
+
+/* ── FAQ ── */
+.faq{display:grid;gap:10px}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius)}
+summary{cursor:pointer;padding:16px var(--space-3);font-weight:700;font-size:15px;
+  min-height:44px;display:flex;align-items:center;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';margin-left:auto;color:var(--faint);font-weight:400;font-size:20px}
+details[open] summary::after{content:'−'}
+details p{padding:0 var(--space-3) 18px;color:var(--dim);font-size:14.5px}
+
+footer{border-top:1px solid var(--line);padding:var(--space-4) 0;color:var(--faint);font-size:13.5px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:space-between;
+  align-items:center}
+footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
+
+/* ── 모션 — 요소 한 종류만, 끌 수 있게 ──
+   ⚠ .reveal 을 기본으로 숨기면 JS 가 없거나 크롤러가 올 때 본문이 통째로 사라진다.
+   그래서 **기본은 보이는 상태**이고, JS 가 돌고 모션이 허용될 때만 <html class="anim"> 이
+   붙어 그때부터 숨겼다가 나타난다. */
+.anim .reveal{opacity:0;transform:translateY(12px);transition:opacity .35s ease, transform .35s ease}
+.anim .reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .anim .reveal{opacity:1;transform:none}
+}
+</style>
+<script>
+// 모션을 켤 수 있을 때만 .reveal 을 숨긴다. 이 줄이 없으면(JS 차단·크롤러) 본문은 그냥 보인다.
+if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.documentElement.className += ' anim';
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="top">
+  <div class="top__in">
+    <a class="brand" href="#top"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACcUlEQVR4nO1YPUtDMRQ9FXfBQbCTiIh00r04+AdEcRH9CY7ioIO4imMHcdatKP4BB+muUylFSqcnOBT8BTqlpPEluV9tBT1L8/ruTc5JbnLvC/CPf6hQkTquVue//OduMWD1pfV3EDmtVue/9uprI/81Wx0yCa2/jxmuQ9ngALBXX/sxq+PwD8Fe9rLBfTRbneR7ij9nJWaphhzESObESWAiYHlpYdg+8dq9/seIXW72JWDvgRA+ec47K7AEdItBxQ8DCkGOCMlJxF4BJ4JDjGI7sWM0hsvbZ7Kt5WY2EbB/eo2Xdpskotnq4KXdxtnNvcXQ8kQWnjApUGyliUy1Ao7YRq2GjVotaeMjZc+FOoR6/Q+cHG4CwPDXfxfC5QKrnMDe9ZRyYnt3q/T/x/unpJ/kJDItJULiO0cNAMBD42jkfU4IB2bHaIx82C6z1cBEgISQlQhxJs7BhU3YjkGaicdSTjtQiGshCqFwFSSb0veRzj6g2AMaEVbkAcWthENZXqDmAS15wEAAQEtuISzIA0oBrviSlgUuBKcSQpJZj2Him9iSPCAvpQHDiy0tJvI9MC7yDhIR5LjjkJeW0w6cPUG+jF2pzg2f15cXf9hwi7MyMa+992H7rfgkiciGUEg+HAiwqUbDPleqc6RwSgooIx8OqCmLnW9I3oEiIiogRd4hNjAHuT5yIlQfNOfHBxp3kz7MPimnhb8t4OLqTk1A20dUQLcYVN6Kz6RzWT7gItdHLh8kVyAlwg2sueNxvjERlGQmysQxUE8USthQMzGrFqKIAOJCqPFOJQ8Yr4CPMCy4Sc+sFvrtGEsIxTY+x58aQt84W1rQgy3DXQAAAABJRU5ErkJggg==" alt="" width="28" height="28"><b>CADENCE</b></a>
+    <nav aria-label="주요">
+      <a href="#download">다운로드</a>
+      <a href="#how" class="hide-sm">시작하기</a>
+      <a href="#features" class="hide-sm">기능</a>
+      <a href="#faq" class="hide-sm">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<div id="top"></div>
+
+<section class="hero" style="border-top:0">
+  <div class="wrap hero__grid">
+    <div>
+      <span class="eyebrow">macOS &amp; Windows</span>
+      <h1>오늘 일한 시간이<br><em>캐릭터로 자랍니다</em></h1>
+      <p class="hero__sub">메뉴바 구석에서 조용히 시간을 재고, 목표를 채우면 알이 깨어납니다.
+        타이머를 누를 필요도, 무엇을 했는지 적을 필요도 없습니다.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#download">내려받기</a>
+        <a class="btn btn--ghost" href="#how">어떻게 쓰나요</a>
+      </div>
+      <p class="hero__meta">무료 · 설치 후 바로 사용 · 기록은 내 컴퓨터에만 저장됩니다</p>
+    </div>
+    <div class="shot" role="img"
+         aria-label="Cadence 패널 미리보기. 새끼곰 캐릭터, 오늘 일한 시간 2시간 31분, 목표 4시간의 63퍼센트.">
+      <div class="shot__bar"><i></i><i></i><i></i></div>
+      <div class="shot__row">
+        <div class="shot__pet"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACZklEQVR4nO2ZsUqDMRDH/4q70EHwm0SkSFGwzsXBFxDFRfQROoqDDuIqjh3EWbei+AIO0l2nUkTEqYKD4BPUxSvp10u+y+Uqov1NIc0l/0tyuXwpMGbM/2ZCa1jOSj0qP3U/VP1Y9BFtRINu1xb7dc1WJ0qERR9EVONyVuq5g+ZptjqFAiz6cJmUNvytiD0tmjmCtoIPaR/SVZiSNCpifm6mXz74Lr+8vrPCrElywBXu+811RDL7sYhj4Kn7MeHOYEi8i7QdMQ7iIspZqXewtxY9EBcTLto8YLICp5f3OL28F7dvtjpsQGuycbIDO4fneGi3AUDkBAl/aLdxdHHdr9+uLQ5cLaSoHCjaDqntY4hygEtm1UoF1UolemDOTrMK6i0kndVRzj5gdJmjfU2n0/LqEmt/e3030N7XV0wwm1wlSIhPOLGxtW4x3ABmiYwTt1lvYLPeELXVYuKATzxXDtloiHIgfx8KCblp1NlyyDZ2/wNGMeDDJ9yS6C3ErYIFmtkHDGKAjsaftiVUDuRXQSPEtdHOPpDwLgQMP49IT5Z8QtOKBxIdIPIZ2ueI1ay7mDgA8I9VHBaz7pLciVR4HitHkmMg9aUhdSupj1EL8YD+S4xQvyqHxEuCOI92JUyvEkXHKP1ukcCI6C3km/2Y2yXX9kc/6n8TI/seGIUNx/9bgT93nQbSb6MpJP1LuZBND9Uf7+8G7U7Orobqnruf6mysWgGfeIAXWPTbQjatzsaqPOATT3BCQ44BeifUV4mQEyvzs2z948ub10a7jcxj4Ln7GbTz2WhjQH0X+h5waMkFQjQ2Xr4AFR5FXsA8LNcAAAAASUVORK5CYII=" alt="" width="64" height="64"></div>
+        <div>
+          <div class="shot__t">2시간 31분 <span>/ 목표 4시간</span></div>
+          <div style="font-size:13px;color:var(--dim);margin-top:2px">새끼곰 · 다음 단계까지 1시간 29분</div>
+        </div>
+      </div>
+      <div class="bar"><i></i></div>
+      <p class="shot__cap">메뉴바 아이콘을 누르면 열리는 패널</p>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <h2>내려받기</h2>
+      <p>버전 0.1.0. 설치 파일만 받으면 됩니다. 계정도, 결제도 없습니다.</p>
+    </div>
+    <div class="dl">
+      <div class="card reveal">
+        <h3>macOS <span class="tag">Apple Silicon</span></h3>
+        <p>M1 이후 맥. macOS 12 이상.</p>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0-arm64.dmg">.dmg 내려받기</a>
+      </div>
+      <div class="card reveal">
+        <h3>macOS <span class="tag">Intel</span></h3>
+        <p>인텔 맥. macOS 12 이상.</p>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0.dmg">.dmg 내려받기</a>
+      </div>
+      <div class="card reveal">
+        <h3>Windows <span class="tag">64-bit</span></h3>
+        <p>대부분의 윈도우 PC. Windows 10 이상.</p>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0-x64-setup.exe">설치 파일 내려받기</a>
+      </div>
+      <div class="card reveal">
+        <h3>Windows <span class="tag">ARM</span></h3>
+        <p>Snapdragon 등 ARM 윈도우. 아니면 왼쪽을 받으세요.</p>
+        <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.0-arm64-setup.exe">설치 파일 내려받기</a>
+      </div>
+    </div>
+    <p class="note"><strong>macOS</strong> 가 <code>확인되지 않은 개발자</code> 라고 막으면
+      <strong>파인더에서 앱을 우클릭 → 열기</strong> 를 한 번만 해 주세요.
+      <strong>Windows</strong> 가 <code>PC를 보호했습니다</code> 라고 막으면
+      <strong>추가 정보 → 실행</strong> 을 눌러 주세요.
+      아직 개발자 서명·공증을 받지 않아 생기는 절차이며, 다음부터는 바로 열립니다.</p>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <h2>세 단계면 끝납니다</h2>
+      <p>설치하고 나면 손이 갈 일이 거의 없습니다. 알을 고르는 것만 오늘의 선택입니다.</p>
+    </div>
+    <ol class="steps">
+      <li class="reveal"><h3>목표 시간을 정한다</h3>
+        <p>4시간부터 10시간까지. 오늘 이만큼 일하면 캐릭터가 다 자랍니다.
+          부화 전에는 언제든 바꿀 수 있습니다.</p></li>
+      <li class="reveal"><h3>알을 고른다</h3>
+        <p>알이 곧 동물입니다. 밤빛 알은 곰, 노을 알은 여우가 됩니다.
+          직접 그림을 넣는 <strong>빈 알</strong> 도 두 개 있습니다.</p></li>
+      <li class="reveal"><h3>그냥 일한다</h3>
+        <p>키보드와 마우스가 멈추면 알아서 쉬는 것으로 칩니다.
+          목표의 35% 를 채우면 알이 깨어나고, 100% 를 채우면 다 자랍니다.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="species">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <h2>알 → 새끼 → 어른</h2>
+      <p>내장 동물 네 종에 직접 만드는 두 자리. 하루가 끝나면 도감과 기록에 남습니다.</p>
+    </div>
+    <ul class="dex reveal">
+        <li class="species">
+          <span class="species__name">곰</span>
+          <span class="chain">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABYElEQVR4nO2YvQ3CMBCFD8QM1FRMwADUCCFmQIgiVeagoqKgYIYUKDUDMAFVqhQsAZUlsID43Q+Jhb8uCjzf8935khAlEolEm/SshPf57P58ne1Kk7XURP2Am9AyJBZBA/eRGulL/iwNXkODbUAjeA0tVvqK7frtgnVdc+MgIl45wRnYZgu1nffJlxNYW9QDXQAyYLn7DjQLA3SBTbb6eM/1wLk8obJsgjPwi913IFn4rx7oIslA2wRNPr+pxqOhSTDX6vZyvSsujfFFn4HoDcCDTMJ0Nv9+n4gO+yOkGZSBkFrUJnTN6EsoGWib6A1AzekGmvUgQw6N6DMQvQH4fM+Xk7sroabBRIS9nV2rGzxzWJPY1eoU+K0VcAlZTmWOdvQ9wDJgkQWuJjsDmiYkWqLHafTR1wJRD2hkQaohbmJJABoboHIKcQLR6iH106Tps6D2CWY2lHwjbbyWJhIBPAAikHYkYR/bUAAAAABJRU5ErkJggg==" alt="밤빛 알" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACZklEQVR4nO2ZsUqDMRDH/4q70EHwm0SkSFGwzsXBFxDFRfQROoqDDuIqjh3EWbei+AIO0l2nUkTEqYKD4BPUxSvp10u+y+Uqov1NIc0l/0tyuXwpMGbM/2ZCa1jOSj0qP3U/VP1Y9BFtRINu1xb7dc1WJ0qERR9EVONyVuq5g+ZptjqFAiz6cJmUNvytiD0tmjmCtoIPaR/SVZiSNCpifm6mXz74Lr+8vrPCrElywBXu+811RDL7sYhj4Kn7MeHOYEi8i7QdMQ7iIspZqXewtxY9EBcTLto8YLICp5f3OL28F7dvtjpsQGuycbIDO4fneGi3AUDkBAl/aLdxdHHdr9+uLQ5cLaSoHCjaDqntY4hygEtm1UoF1UolemDOTrMK6i0kndVRzj5gdJmjfU2n0/LqEmt/e3030N7XV0wwm1wlSIhPOLGxtW4x3ABmiYwTt1lvYLPeELXVYuKATzxXDtloiHIgfx8KCblp1NlyyDZ2/wNGMeDDJ9yS6C3ErYIFmtkHDGKAjsaftiVUDuRXQSPEtdHOPpDwLgQMP49IT5Z8QtOKBxIdIPIZ2ueI1ay7mDgA8I9VHBaz7pLciVR4HitHkmMg9aUhdSupj1EL8YD+S4xQvyqHxEuCOI92JUyvEkXHKP1ukcCI6C3km/2Y2yXX9kc/6n8TI/seGIUNx/9bgT93nQbSb6MpJP1LuZBND9Uf7+8G7U7Orobqnruf6mysWgGfeIAXWPTbQjatzsaqPOATT3BCQ44BeifUV4mQEyvzs2z948ub10a7jcxj4Ln7GbTz2WhjQH0X+h5waMkFQjQ2Xr4AFR5FXsA8LNcAAAAASUVORK5CYII=" alt="새끼곰" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACcUlEQVR4nO1YPUtDMRQ9FXfBQbCTiIh00r04+AdEcRH9CY7ioIO4imMHcdatKP4BB+muUylFSqcnOBT8BTqlpPEluV9tBT1L8/ruTc5JbnLvC/CPf6hQkTquVue//OduMWD1pfV3EDmtVue/9uprI/81Wx0yCa2/jxmuQ9ngALBXX/sxq+PwD8Fe9rLBfTRbneR7ij9nJWaphhzESObESWAiYHlpYdg+8dq9/seIXW72JWDvgRA+ec47K7AEdItBxQ8DCkGOCMlJxF4BJ4JDjGI7sWM0hsvbZ7Kt5WY2EbB/eo2Xdpskotnq4KXdxtnNvcXQ8kQWnjApUGyliUy1Ao7YRq2GjVotaeMjZc+FOoR6/Q+cHG4CwPDXfxfC5QKrnMDe9ZRyYnt3q/T/x/unpJ/kJDItJULiO0cNAMBD42jkfU4IB2bHaIx82C6z1cBEgISQlQhxJs7BhU3YjkGaicdSTjtQiGshCqFwFSSb0veRzj6g2AMaEVbkAcWthENZXqDmAS15wEAAQEtuISzIA0oBrviSlgUuBKcSQpJZj2Him9iSPCAvpQHDiy0tJvI9MC7yDhIR5LjjkJeW0w6cPUG+jF2pzg2f15cXf9hwi7MyMa+992H7rfgkiciGUEg+HAiwqUbDPleqc6RwSgooIx8OqCmLnW9I3oEiIiogRd4hNjAHuT5yIlQfNOfHBxp3kz7MPimnhb8t4OLqTk1A20dUQLcYVN6Kz6RzWT7gItdHLh8kVyAlwg2sueNxvjERlGQmysQxUE8USthQMzGrFqKIAOJCqPFOJQ8Yr4CPMCy4Sc+sFvrtGEsIxTY+x58aQt84W1rQgy3DXQAAAABJRU5ErkJggg==" alt="곰" width="48" height="48">
+          </span>
+        </li>
+        <li class="species">
+          <span class="species__name">고양이</span>
+          <span class="chain">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABw0lEQVR4nO1ZS2rDMBBVSk7hZQgl5CQ6SijGhB6hi9JVEcaUHKGr0qVPUkwoXXqdVcjOWckI1Z/5iUSgBwEbj8czmjcfKUolJCQk3BKLUIo/qvfOvX/Kn4N8S0zp3+9Pb3Bd17PyUg4tuQr8lYbCOrxab1mOsF7GrrrWur925TnReKC+SF15aV0kB76/Prssy5T/44DqBDp0l/NplDZt2/6TH6PNEJrmqMrqgLKJTKF7AcqBt9cXMd6PwS0MEKDCdTmfOmNKtdk8Dj63FMLQxpc3pkTRCBwBl/uhUeQ78LeizwFwJzamnHyute4pRG1qTXOEmtMj+ghE7wAo2/2kslWIU22G5H0KQapR9BGI3gH0fmC/L/prCdpM6S+rw6w8KALYAUsC0I1O9BQCr6wdsqZmIQvuLKQUPOrRRyB6B8BVaLXeLqamRImmZhtZkHH6XhG9A+j6XuS7LuQshO05pJM5y1XXIMgsj5WHAE2hkF2ZopsUATuvzO3SXFmoPBakJOYeyA6BGllyFZJ0gkNL9vH6EELTxgWrD0gkNFcHu5FxDJBYgCB/MUFoI1WOxXLAJvXc4ax0HwnWlPzJ9Rbb0oQEAK4tItN6astllgAAAABJRU5ErkJggg==" alt="잿빛 알" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACtklEQVR4nO1YPUtcQRQ9G1LmZzyWxxYiEUQWixBIk1LEIpXFI5B/ICGIiAR/xBZWFiIWFiLWsohgCClkkfcz7F+KeHX27dz5uPe+zQZyqmXe3JlzZu7XDvAf/xjKftEs0tqvcjeoqu1OREjXzhJAsBZB5CUQCQDsRGjIAwoBW5sb4k0t1xILAICry3PVLZT9orm6PNdQwGuVNf640mh0lCRi8lD36LfWdQhqAVubGyiKYma8ruuZMVdoVW2buKFKwI+fv9hvJMoV4p64VQyJYyBE3oXvdgDg5PRMuvUUVEGsxcnpmVqISAB3qtL5GhG9+JRplP2iOTw8mBrb2fkGAGiPu3BjYTQ6AjAdEzTmZqoUqF3ow/t3uLu9BvAiJAQiend7jS+fq+fxubYSvhRpOT8Hom7UxcrqOlZW17M39tnNrRsF0k+1y9MHMoOYK//k1xTEb5eXvPaUbXxB7K6VE8jqVsIlwhEnWHawBLNC5iP3eHyBx+OLpLlSmAjgyPt+h2wkEBWy1KaMiL/59JGd41Zh8n83E8XiwSQGOISIcyj7RTMcrrlDTUhEtgtNHuoeZRFL0Jot8hgO14K1QR0DmkbMoqUWCWjfgoSIz/clXERGBLpaCurUzNIuaBS4bfchjMc3rECVAEJqZgqdOicgRB4wykJPLvV8GyGXkvb9HNQC2m4UA80jwVoh6hjQvu1w6ROIuw+gEGD1MAUA9/cT73iKAJELxcinBLGLwaBkRcRg2krE0ih9T6kbKacPCAoZd/o53aVv7mBQ5lIB8JcftizQ2f+BLmx8WMgbSPV/YIHaacpCOeQBoxvQdqMaqAqZr3ru7X4N2u3tfw9+n8sNhFrfEEFr8oCwDnDkCT6iMfJSiFwoJoIrSqF2QXL6QAcxMB7fBO2kXScHcS/0tOHMa0ECEYkNi98aXHL7wCaq3gAAAABJRU5ErkJggg==" alt="새끼고양이" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACr0lEQVR4nOVYu2obQRQ9Ci7zGYNY1BqMES5CII1LY1ykSiEC+QMTQjAmBH/EFFu5MMZlvsAIY3AIKYwQ8xnplSZ3MxrtzN659yoPfCpp53XO3Ocu8BTRjN3qX9nzmeSg2eyNqQjNntUCCFYiiLwUYgGAXoSWPKAUcHJ8JBZB5E+OjzQUsKNaDXQEvG9Xi2UYEbm+ufG4BXnAQEAMIp5zC+9b8+xlIsA5h4uLTxvPQwhr/2NhFrcPKGMAAL5++54dc85lx66ub7RHA1AKKJEnbFuEWECJWM1crYhqAYtlGHnfbjw/Pf3A3qNvvfdtl6VqoI4BAHj18gUe7m9ZIrxv8XB/i3dvZxZHy3uhNMOUwJn7x3sh4Dex3b0D7O4dFOfEKM2vhdqFQghdDUhrQR95qgXaHohQHTScBixXpIYyjiSQTVuJlPiPyy8AgOevD9fGa1NnGhuxSDMBOfL0m0TQXK6IZuxW0+l++rhrHE3SqKSv4azJkMd0ut9ZxayQpYhvPP6dg7SQmcZACg7xHHK3n0LkQqkVJP1MvKb29ufzO6hjQCNiiDz39gFlEPeJKAlJx6V+H0MdA79ErBU3jjUsyANKCzRjt5J+GqHmrbaBi/0fELQSBItvOoTYGkP+nwoQWcCSPMBvpVPygOJ9wBokgpt9CFUCtkWeINmbnYVqyEvbaQCYTBo8Pi64tHhBnJp2Mmk25tQ2dH1iSsT7/B9guFCfX6YHWXSjNbceoyigFFR0oOYTIa0dIp+7faAggJMRpLdmuYeqEp99fK863GIPkzeyv4mnLeDs/LOagHaPrIDFMozm87vi4r56UIuhPUoZCBiwQEkEHaz5PE5rcyKGyAPCSpwDN6Nw3cZMAFD3npoTUuPvHPKAsQVipG5RW7C4Av77NLoVF8oFfs167gv/T9J5lh09KJvzAAAAAElFTkSuQmCC" alt="고양이" width="48" height="48">
+          </span>
+        </li>
+        <li class="species">
+          <span class="species__name">토끼</span>
+          <span class="chain">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABwElEQVR4nO1YvU7DMBA+EBsLKzwAavbsFIkX6Iq6wsRD5CE6ZY46lheoqnbPTKI+QLqyMIfJlqmwfH8utfA3OZF9vvN9d+czQEZGRsZf4iKW4Ha9HN3v8uk5yl5qQr8+B6tw126D87UMupIKOD5p6jqpIaLFVOWLcmrHrpckRlxyF3JPXlsWi0LDx/bXDYdh4OoB7Xo5cjxBXrBZ1eNkcg8AALfFg/1/6HYiAwAA+n4P87eKpBObQucCkgGbVa3Gex/cdIyBKI0eul1wji/z+PDe1CQd0B44xekbNIsKvVfyMUCm0OPsxY4xFMLQxtCsKKfxKHSuSN4AVNE4DipTyHygZh6Dvt//+MYUteQ9kLwBqCw0m7/aMSZLUDIPdr4PKA9c39xFaz19wF7q/geFAMLUoVJCQhsXyXsgeQNIwWkKWqiQ+RCimSlklK4seQ8kbwA5vzeLyjb1WsXIgNPUs1pKw1XXgOOL2KlAphD1hGLLFjX1mHsR9R5FBSuIY3iBK5OdhTSNkMgSP6+HEIM2LkR1QMMLUhniQiZRQOMA1HjsNv6YzKMVQ2oxYBQKPQtqZ7BoRcm8MhsPxCyAGRkCfAOQqa/lf0oOpwAAAABJRU5ErkJggg==" alt="달빛 알" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACoElEQVR4nO1ZMWvbQBT+UvoXmslDMaVorWZhgocGQsgcQggdQqcOHTx41OjBQ4dMxUMoxWTWEEgGEYpmz6KDyWA6dOrU9TqkTznLd/Lduyc7Qz4wFuf3pO977+7eOxkIRBJHqsgm6u+fX6rIJqrIJiqJI2Wz021Ndr54EeKcxJEapYOV8VE6gE7O1Y6DIAGEuHew9C1l6wIRAdvEs4Bt41nAtvGyzZtL7PPrICLg92JeXXe6EYCHPX4TYAtI4kh9/zax/k5CFvNyaXz24xqAXB3Y4TitI19HXQRhmI4BAMWsZPEAtryIR+kguJ3wFuAbfeBxOtkQIkIkA6dn5zg9O3e2H6bjavqEIljAq84b3OR3AOAkgojf5Hd41zusxrlZYAmwLUopex94CTD19fv9Pez397wfbPLjZIE9hVyj2mb0gcA1sJiXSxWXdqfdTrf6xL2D6gMsV2iJai3SShCR3U630e5RhMRTHyBWyEytwf3FFPcXUydbLkTPxDp04m2K8BJQzMqdegGyEXn96cR43eQ7TMfefVGr5wEbcUl4TyFTFiTAiT4gsAaov9+0L4EloJ4FDhHdhxt9gHmgIVDZpzrgurMQeYkDTZAAQr1HsgmRiroOEQHAajZskIi6juCbuBKvQ0pI8BoIbchCpxJ7G5UgD4T/R8B+rdJE3mUR18HNhGgrsW4bpd8lChiB9VrFFH2f7tJku9FD/VNCa+cBrs/GDvVt4DbPcZvnXiKeTDutZ8RHhEgGQrvRELArYBJH6sPx0cr4ycfPjX7Tr1/W+rzv951rAruQmcjbCBFM5AmXV1l17VPQWHWgiTxgJtpEHgDonr7VuJUMRNFb43hZ/rT6XF5lrFZCfA3oU8EEmw+3I2X3Qv8fuLLVORDh+FjxD2qdTmCTaKFAAAAAAElFTkSuQmCC" alt="새끼토끼" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACmklEQVR4nO1ZMWvbQBT+XPoX2slDCaVorWYRgocGSskcQikZSqcOGTx41OjBQ4dOxUMoJWT2EEgHE4JmzaKD6WAydMqUVZ2eK110p3f3nuSG9ptO1rt33+d77947GxAiiaMyW8zLu9ub8u72pswW8zKJozLUrleYpGzkuHYheCSXsV38F7BtPHgBj7t03scp05mAaTruynUNKgJ+rVe15+FOBABYr4ra5/n1xWYc777WWFqeA0TW911+fYFJOkOWFwPJ+sECkjgqv32dt9q5REzTsThPggRwyRO6FKF2jL59955tO0lntWeJCBUBT4bPcbm8YomYpDNcLq/wcveNxtL+ApI4Kqfp+N4J4wLHNnQXRDtAxPZHe9gf7TltqnDZ+0IcQutVAUpoM7GbyFOB0yp0KoVsvSpQDSsqUk+HOzU7KmSaVVq1lTCr68/PZwCAZx+Pau+rFVkKtWPURt4cN9lKoCIghNDWeqEsLwZmIWoChY05tiG0L+r0PsAhLkVQCJm7EJKU1TmSrjQ4ByQitMgDgKgXB/60FlXYEtQUqXEfEAsAmkW0QYM8IBRAzVdoZaUQ3EoIhXzrNvSexJrkgZ4vNNrkCb3cB7oiTwgRwY47H/LcY9QGn5xgGSVxVB4fHmyeo+jFPRvf5qxJTFH82IxPzxcsEa0hZJI3FwJ0ulHT5/HhASucnAKayJsLStpimmuSJ3BEWAW4yBNsC/ugzUebCNGF5ujDiWS6io8H/wfHvy3g7MsnMQGOj+/LpTUPrAKyvBicni+cjpvqgS/afLTliHMHXCJoYclvPDTXJoLIvxqNrEUtqBLbwD1ROGHDIQ949kIcEdXFTXBzprrrbe2E6g5UYYaFb9FT64X+dnQSQrbE95nPbad/AzUUjqGxD7/YAAAAAElFTkSuQmCC" alt="토끼" width="48" height="48">
+          </span>
+        </li>
+        <li class="species">
+          <span class="species__name">여우</span>
+          <span class="chain">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABeElEQVR4nO1YOwrCQBBdxdID2AliZeEBRDxDsBAPYGFhJTlG8ASeQaw8QfAAFqkkaBM8gL1WK3EJ7s5nEwf2gYWgs/P2zbwXVSogICCgSbR8FT7H01f5/SRJvZzFVtRs2AYuQuQi0MZNUIm0KV+mNs9RA02Ao3mOWij5brtF5YFFUWD7UErhxgmswGkzs97WOIo+Lwj28yFYCdIO/ANABFxunwqoCh0fTVyORx9lK+GsQB23rwFRQfwOkEaoX3KZe41jU4Z4BcQTcEo+c6lGgx754HLIadfK8sfXZ1aHq7U/8QqIJ+AlyFzAFXZOCrjMIjdczwwjpFHlKnVAvALiCYCWUwcaNshsY6aDDGIa4hUQTwDs7880+TwXcbtNlj/AmUOyUfPhqwmAR6g7jb2lMibxUc1g/r/5heV2rZTCXQ5qiX08G2GVRbsQJwnKWIq3URIBDhWoNcgKUBrguACWEcI0wrVD7G5is1huB/MWSiaRJn6WBgQ44A2SrntZPllG8wAAAABJRU5ErkJggg==" alt="노을 알" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAC50lEQVR4nO1Zv4vUQBT+Viw1HJYWQbZYjy1CiuOKlMJttcUiFmJheVWwtgxW/gEpxNLKQo4trpA7sNxCRJYUx5EiHFdcKXLYx8KdzSSZyY/3XvQO/Kow9ybzfW/mzfuyB/zHLUPgOvltfPd2ge+v/HyIhajvvkNZLF6MRbMVuE4eL8akuSQBgJwIDnmAIWASHZMXlXwXWQAAnKzPWLsQuE5+sj7jUMBd1mz8OUrhMuskYnV5PVLP3KOjwBYwiY5xtBvWxq/OL2pjutB4MRY5hiwBvz7WiSs83H0EoCxEz7hUDZFroIm8DiWkijSaU5cugVXEXKTRnC2EJMCWVWo8R8SoPaSMwHXyo9dPSmNP334BAFTHdei1EC4zAOWaUGP6TdUF7CN0/8U7nCYpgEJIExTR0yTF4zeft+N/1UqYrkjJ+D7oJcDUfA68CQ68Se+FTfMo/op8hLpmdcjsA8xGdnV+oawEgKKI7z2PtzF6jtNoXoq/EVYCKIjoxE1Q3TeGTBMDBBuZyRrs+fvY8/c7xVIhIsBG3vTcNIeCXgJWl9cjdX7biHxbfzU+N80Nl1nvRiZSAzbYiEui9xEy7YIEKNkHBGqAY8QkLDVJQHUXKET0OdTsAwQ3qkO1fdUHut4sijzVgepgCVCoeiSbEKms6xARANR3wwaJrOtgv6Qr8SqkhLBrgGvIuEeJPFHqhymgEFH9FugijCSgjXyXIq4iXGY49HZKY++TnwCahYhaibZrVP3dJKRKvjKW20T0bmS27Pdxl6ZYb/zAGn/o7Vg/Nf/pD1t9YBMx2PfAEHNMGNROS+DZh1XxDGDmT0v1cGPsdJL9qI3p5BWq/1QROUJcN2qCibyCLoJ0hDa7kOtXX/IyaF0YAD5t4qRA2oHAdXLTvQ00E+xDvil25k+3zY3UB2zkmxanZH7mT41jehGTrUSTCFtTMhWqgrINOrr4I5aZM4kwEdFhm0N1pOQ+sFmw1hk7EKHMseI3kZdp3bLSGdAAAAAASUVORK5CYII=" alt="새끼여우" width="48" height="48">
+            <span class="chain__arrow" aria-hidden="true">›</span>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACy0lEQVR4nOVYMWsbMRT+XLrWmIwZjPHghg6Hh9LBYyGdPISSqUNHT0fnjCZTf0CG4jFThxJuyFAa6HhDKSXcUIKHI3jIGIzpfl2iQ9ZJd9J77+qWfovPJ+np+6T39J4O+B8x6XeLf8Gmc6If78aF5IQcm4+ok54dDUVWbdLvFmdHQ/J4sgCAL4JLHmAKGM0vySIU+dH8kkMBj1mj8SACU8RJXqSrTUeRs/XV2yXIAwICdCjiLreIk1z8pBERsH8wwMXJoPL+7uZ2678uTGL1AWYMAMCvj7Gzbf9g4GxbzqfcqQEwBdSRV2hbBFlAHbGQvlwRwQLS1aYTJ3nl/ev3X71t2MbHSV6eUiFgxwAAPHnzAVfZ0ktEnOS4ypZ4evpZYupwAeoMN0+YOvj0pSZE1g4oYofRCIfRqLaPjrr+oWC70N3NLS5OXgJA+au3mVC5gFsDKQQHjU8B5kpSTScOJZBFSwmT+PPxCwDA9+tvW+1SSQwQOoUAN3nz2daXAxEBFEI7q4VcicyEchvz2QVqIhONARM+xLkguZC5C5Sg1MdQVx9gxABHhBR5gJAHTNjygm8e4JIHBAQAtK8LEuQBpoCmO3ATlAvuxIUkvuko/PEgliQP8D6Qke8D0qCKCNq2tsjrUO5kE2NzM28BIeSp5bRCnOSYRb3K+0W2BrAtxEvApN8tdIPRcK/SJ7Q4s4nJ8nuvsYtsXYpojAGTvG0iiWrUlzwAzKJeGS+1O2AjryMa7rHL4uV8GkRexyJbu3egiTwQtmpt2WBdaI7PU9bkXBuzqCd3pdwVWr3QtAV911g78OnthE0mxMbxeVpxOaeAdLXpqMThgi0fhMLXhitWanegToSamPONR43lLAQpE7vge6JQXM9lO6gW8hFRNxk3Zmx2RXdAh+kWEklPufOX65/lu7/2GLXFnirgXo2flaV2Ky7kCvyQ8b5XzN9VkmkTN+LXuAAAAABJRU5ErkJggg==" alt="여우" width="48" height="48">
+          </span>
+        </li>
+    </ul>
+    <p class="note">희귀하게 <strong>흰 개체</strong>와 <strong>검은 개체</strong>가 나옵니다.
+      실제 동물에게 있는 백변·흑변을 그대로 옮긴 것이라, 어떤 동물이 나와도 어색하지 않습니다.</p>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <h2>무엇을 해 주나요</h2>
+      <p>시간을 재는 것 말고도, 하루가 어떻게 흘러갔는지를 남깁니다.</p>
+    </div>
+    <div class="feat">
+      <div class="card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <h3>자동 시간 측정</h3>
+        <p>타이머를 누르지 않습니다. 입력이 멈추면 휴식, 회의 앱이 앞에 오면 회의로 칩니다.
+          최장 연속·휴식 횟수·야간 시간이 함께 쌓입니다.</p>
+      </div>
+      <div class="card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M4 19V5a1 1 0 0 1 1-1h9l6 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M14 4v6h6"/></svg>
+        <h3>내 캐릭터 만들기</h3>
+        <p>빈 알을 고르면 새끼·어른 그림을 직접 넣을 수 있습니다.
+          이름도 하나만 정하면 <em>펭귄 알 → 새끼펭귄 → 펭귄</em> 으로 한꺼번에 붙습니다.</p>
+      </div>
+      <div class="card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"/></svg>
+        <h3>Flow 업무 연동</h3>
+        <p>오늘 끝낸 업무만큼 진화가 앞당겨집니다. 새 업무와 멘션이 오면 메뉴바 아이콘에
+          점이 붙고 알림이 옵니다.</p>
+      </div>
+      <div class="card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <h3>캘린더</h3>
+        <p>맥 로컬 캘린더나 .ics 구독 주소를 물리면 다음 일정과 회의 중 여부를 알려 줍니다.</p>
+      </div>
+      <div class="card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M3 17h18M6 17V9m4 8V5m4 12v-6m4 6v-9"/></svg>
+        <h3>기록과 도감</h3>
+        <p>하루가 끝나면 등급(★)과 성격이 붙어 보관됩니다. 만난 종은 도감에 남습니다.</p>
+      </div>
+      <div class="card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M12 3v4M5.6 5.6l2.8 2.8M3 12h4M5.6 18.4l2.8-2.8M12 21v-4M18.4 18.4l-2.8-2.8M21 12h-4M18.4 5.6l-2.8 2.8"/></svg>
+        <h3>바탕화면 캐릭터</h3>
+        <p>원하면 화면 아래쪽을 걸어다니게 할 수 있습니다. 클릭은 그대로 뒤로 지나갑니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="sec__head reveal"><h2>자주 묻는 것</h2></div>
+    <div class="faq">
+      <details class="reveal"><summary>내 기록이 어디로 가나요?</summary>
+        <p>내 컴퓨터에만 저장됩니다. 서버로 보내지 않고, 계정도 만들지 않습니다.
+          Flow 를 연결하면 그 자격증명은 OS 의 보안 저장소에 암호화해 둡니다.</p></details>
+      <details class="reveal"><summary>회사 노트북에 깔아도 되나요?</summary>
+        <p>보안 정책은 회사마다 다르니 관리 부서에 확인하시는 편이 안전합니다.
+          Cadence 자체는 화면 내용을 읽거나 키 입력을 기록하지 않습니다 —
+          <strong>입력이 있었는지 없었는지</strong>와 어떤 앱이 앞에 있는지만 봅니다.</p></details>
+      <details class="reveal"><summary>무엇을 했는지도 기록되나요?</summary>
+        <p>아닙니다. 얼마나 오래, 어떤 리듬으로 일했는지만 남습니다.
+          문서 제목이나 대화 내용은 다루지 않습니다.</p></details>
+      <details class="reveal"><summary>자정을 넘기면요?</summary>
+        <p>그날 하루가 통째로 기록에 보관되고 새 알이 시작됩니다.
+          앱이 꺼져 있는 사이에 날짜가 넘어가도 보관됩니다.</p></details>
+      <details class="reveal"><summary>목표를 잘못 잡았습니다.</summary>
+        <p>부화 전에는 자유롭게 바꿀 수 있습니다. 부화 후에는 올리기만 됩니다 —
+          이미 자란 캐릭터가 되돌아가지 않게 하기 위해서입니다.</p></details>
+      <details class="reveal"><summary>윈도우 작업표시줄에 아이콘이 안 보입니다.</summary>
+        <p>윈도우는 새로 설치한 앱의 트레이 아이콘을 <strong>숨겨진 아이콘</strong> 안에 넣습니다.
+          작업표시줄 오른쪽의 <strong>﹀</strong> 를 누르면 곰 아이콘이 있습니다.
+          매번 두 번 누르기 번거로우면
+          <strong>설정 → 개인 설정 → 작업 표시줄 → 기타 시스템 트레이 아이콘</strong> 에서
+          Cadence 를 켜 두세요. 그 뒤로는 작업표시줄에 그대로 붙어 있습니다.</p></details>
+      <details class="reveal"><summary>Windows 에서도 똑같이 동작하나요?</summary>
+        <p>캐릭터·시간 기록·도감은 같습니다. 다만 <strong>캘린더</strong>는 다릅니다 —
+          맥은 시스템 캘린더를 바로 읽지만, 윈도우는 캘린더의
+          <code>.ics</code> 구독 주소를 한 번 넣어 주셔야 합니다.
+          패널의 <strong>캘린더 → 연결</strong> 에서 넣을 수 있습니다.</p></details>
+      <details class="reveal"><summary>설치할 때 경고가 뜹니다.</summary>
+        <p>개발자 서명을 아직 받지 않아서입니다(맥 <code>확인되지 않은 개발자</code>,
+          윈도우 <code>PC를 보호했습니다</code>). 위 내려받기 칸 아래의 안내대로
+          한 번만 통과시키면 그 뒤로는 뜨지 않습니다.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Cadence 0.1.0 · 캐릭터 그림도 직접 그렸습니다</span>
+    <span><a href="https://github.com/kwongyumin/cadence-app">소스와 이슈</a></span>
+  </div>
+</footer>
+
+<script>
+// 요소 한 종류(.reveal)만 움직인다. 모션을 줄여 달라고 한 사용자에게는 아무것도 하지 않는다.
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var items = document.querySelectorAll('.reveal');
+  if (reduce.matches || !('IntersectionObserver' in window)) {
+    items.forEach(function (el) { el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
