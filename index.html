@@ -173,6 +173,18 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em
 .sums__t th{text-align:left;font-weight:600;color:var(--dim);padding:4px 12px 4px 0;white-space:nowrap}
 .sums__t td{color:var(--faint);font-family:ui-monospace,monospace;white-space:nowrap}
 
+/* ── 시간 규칙 ── */
+.rules{border-collapse:collapse;display:block;overflow-x:auto}
+.rules th{text-align:left;font-weight:600;color:var(--lcd);font-size:13.5px;
+  padding:7px 20px 7px 0;white-space:nowrap;vertical-align:baseline}
+.rules td{color:var(--dim);font-size:14.5px;padding:7px 0}
+.rules b{color:var(--ink)}
+.sub{font-size:15px;margin-top:var(--space-4)}
+.plain{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:10px;max-width:74ch}
+.plain li{color:var(--dim);font-size:14.5px;padding-left:16px;position:relative}
+.plain li::before{content:'·';position:absolute;left:2px;color:var(--faint)}
+.plain b{color:var(--ink)}
+
 /* ── 단계 ── */
 .steps{counter-reset:s;display:grid;gap:var(--space-2);
   grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
@@ -239,8 +251,9 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
   <div class="top__in">
     <a class="brand" href="#top"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACcUlEQVR4nO1YPUtDMRQ9FXfBQbCTiIh00r04+AdEcRH9CY7ioIO4imMHcdatKP4BB+muUylFSqcnOBT8BTqlpPEluV9tBT1L8/ruTc5JbnLvC/CPf6hQkTquVue//OduMWD1pfV3EDmtVue/9uprI/81Wx0yCa2/jxmuQ9ngALBXX/sxq+PwD8Fe9rLBfTRbneR7ij9nJWaphhzESObESWAiYHlpYdg+8dq9/seIXW72JWDvgRA+ec47K7AEdItBxQ8DCkGOCMlJxF4BJ4JDjGI7sWM0hsvbZ7Kt5WY2EbB/eo2Xdpskotnq4KXdxtnNvcXQ8kQWnjApUGyliUy1Ao7YRq2GjVotaeMjZc+FOoR6/Q+cHG4CwPDXfxfC5QKrnMDe9ZRyYnt3q/T/x/unpJ/kJDItJULiO0cNAMBD42jkfU4IB2bHaIx82C6z1cBEgISQlQhxJs7BhU3YjkGaicdSTjtQiGshCqFwFSSb0veRzj6g2AMaEVbkAcWthENZXqDmAS15wEAAQEtuISzIA0oBrviSlgUuBKcSQpJZj2Him9iSPCAvpQHDiy0tJvI9MC7yDhIR5LjjkJeW0w6cPUG+jF2pzg2f15cXf9hwi7MyMa+992H7rfgkiciGUEg+HAiwqUbDPleqc6RwSgooIx8OqCmLnW9I3oEiIiogRd4hNjAHuT5yIlQfNOfHBxp3kz7MPimnhb8t4OLqTk1A20dUQLcYVN6Kz6RzWT7gItdHLh8kVyAlwg2sueNxvjERlGQmysQxUE8USthQMzGrFqKIAOJCqPFOJQ8Yr4CPMCy4Sc+sFvrtGEsIxTY+x58aQt84W1rQgy3DXQAAAABJRU5ErkJggg==" alt="" width="28" height="28"><b>CADENCE</b></a>
     <nav aria-label="주요">
-      <a href="#download">다운로드</a>
+      <a href="#download">내려받기</a>
       <a href="#how" class="hide-sm">시작하기</a>
+      <a href="#time" class="hide-sm">시간 계산</a>
       <a href="#features" class="hide-sm">기능</a>
       <a href="#faq" class="hide-sm">FAQ</a>
     </nav>
@@ -261,7 +274,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         <a class="btn btn--primary" href="#download">내려받기</a>
         <a class="btn btn--ghost" href="#how">어떻게 쓰나요</a>
       </div>
-      <p class="hero__meta">무료 · 설치 후 바로 사용 · 기록은 내 컴퓨터에만 저장됩니다</p>
+      <p class="hero__meta">무료 · 설치 후 바로 사용 · 기록은 내 컴퓨터에만 저장</p>
     </div>
     <div class="shot" role="img"
          aria-label="Cadence 패널 미리보기. 새끼곰 캐릭터, 오늘 일한 시간 2시간 31분, 목표 4시간의 63퍼센트.">
@@ -308,7 +321,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
       </div>
     </div>
     <details class="guard">
-      <summary>설치가 막히면 — 두 OS 모두 한 번씩 경고가 뜹니다</summary>
+      <summary>설치가 막힌다면, 두 OS 모두 한 번씩 경고가 뜹니다</summary>
       <div class="guard__body">
       <p class="guard__why"><strong>개발자 서명</strong>이 없어서 두 OS 모두 한 번씩 확인을 요구합니다.
         서명에는 유료 인증서가 필요합니다. 한 번만 통과시키면 그 뒤로는 묻지 않습니다.</p>
@@ -360,19 +373,43 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
   <div class="wrap">
     <div class="sec__head">
       <h2>세 단계면 끝납니다</h2>
-      <p>설치하고 나면 손이 갈 일이 거의 없습니다. 알을 고르는 것만 오늘의 선택입니다.</p>
+      <p>설치하고 나면 손이 갈 일이 거의 없습니다. 오늘 할 일은 알을 고르는 것뿐입니다.</p>
     </div>
     <ol class="steps">
       <li><h3>목표 시간을 정한다</h3>
-        <p>4시간부터 10시간까지. 오늘 이만큼 일하면 캐릭터가 다 자랍니다.
-          부화 전에는 언제든 바꿀 수 있습니다.</p></li>
+        <p>4시간부터 10시간까지. 부화 전에는 언제든 바꿀 수 있습니다.</p></li>
       <li><h3>알을 고른다</h3>
-        <p>알이 곧 동물입니다. 밤빛 알은 곰, 노을 알은 여우가 됩니다.
-          직접 그림을 넣는 <strong>빈 알</strong> 도 두 개 있습니다.</p></li>
+        <p>알이 곧 동물입니다. 밤빛 알은 곰, 노을 알은 여우가 됩니다.</p></li>
       <li><h3>그냥 일한다</h3>
-        <p>키보드와 마우스가 멈추면 알아서 쉬는 것으로 칩니다.
-          목표의 35% 를 채우면 알이 깨어나고, 100% 를 채우면 다 자랍니다.</p></li>
+        <p>목표의 35% 를 채우면 알이 깨어나고, 100% 를 채우면 다 자랍니다.</p></li>
     </ol>
+  </div>
+</section>
+
+<section id="time">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2>시간은 이렇게 쌓입니다</h2>
+      <p>타이머를 켜고 끄지 않습니다. 키보드나 마우스를 쓰고 있으면 그게 일하는 신호입니다.
+        무엇을 눌렀는지는 보지 않고, 마지막 입력에서 얼마나 지났는지만 봅니다.</p>
+    </div>
+    <table class="rules">
+      <tr><th>쌓입니다</th><td>마지막 입력에서 <b>1분</b> 안</td></tr>
+      <tr><th>멈춥니다</th><td>1분 넘게 아무 입력이 없을 때</td></tr>
+      <tr><th>휴식 1회</th><td>5분 넘게 자리를 비웠다가 돌아오면</td></tr>
+      <tr><th>세지 않음</th><td>노트북을 덮거나 절전으로 들어간 시간</td></tr>
+    </table>
+    <h3 class="sub">손이 멈춰도 쌓이는 때</h3>
+    <ul class="plain">
+      <li><b>캘린더에 일정이 잡혀 있는 동안.</b> 회의는 듣고만 있어도 일입니다.</li>
+      <li><b>소통 앱이 화면 앞에 있을 때.</b> 캘린더에 안 잡히는 급한 통화까지 챙깁니다.</li>
+      <li><b>AI 도구가 답을 만드는 동안.</b> 화면을 보고 기다리는 시간도 셉니다.
+        다만 자리를 비운 지 15분이 넘으면 멈춥니다. 밤새 돌려두고 잔 시간까지
+        일한 시간이 되면 곤란하니까요.</li>
+    </ul>
+    <p class="note">업무를 하나 끝낼 때마다 목표의 5% 가 채워집니다.
+      Flow 를 연결하면 오늘 완료한 업무를 알아서 세어 옵니다.
+      밤 10시부터 새벽 5시 사이는 야간으로 따로 적힙니다.</p>
   </div>
 </section>
 
@@ -424,7 +461,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           </span>
         </li>
     </ul>
-    <p class="note">희귀하게 <strong>흰 개체</strong>와 <strong>검은 개체</strong>가 나옵니다.
+    <p class="note"><strong>흰 개체</strong>와 <strong>검은 개체</strong>가 희귀하게 나옵니다.
       실제 동물에게 있는 백변·흑변을 그대로 옮긴 것이라, 어떤 동물이 나와도 어색하지 않습니다.</p>
   </div>
 </section>
@@ -440,28 +477,26 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         <h3>자동 시간 측정</h3>
-        <p>타이머를 누르지 않습니다. 입력이 멈추면 휴식, 회의 앱이 앞에 오면 회의로 칩니다.
-          최장 연속·휴식 횟수·야간 시간이 함께 쌓입니다.</p>
+        <p>타이머를 누르지 않습니다. 최장 연속·휴식 횟수·야간 시간이 함께 쌓입니다.</p>
       </div>
       <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M4 19V5a1 1 0 0 1 1-1h9l6 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M14 4v6h6"/></svg>
         <h3>내 캐릭터 만들기</h3>
-        <p>빈 알을 고르면 새끼·어른 그림을 직접 넣을 수 있습니다.
-          이름도 하나만 정하면 <em>펭귄 알 → 새끼펭귄 → 펭귄</em> 으로 한꺼번에 붙습니다.</p>
+        <p>빈 알에 새끼·어른 그림을 직접 넣습니다.
+          이름을 정하면 <em>펭귄 알 → 새끼펭귄 → 펭귄</em> 으로 한꺼번에 붙습니다.</p>
       </div>
       <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M20 6 9 17l-5-5"/></svg>
         <h3>Flow 업무 연동</h3>
-        <p>오늘 끝낸 업무만큼 진화가 앞당겨집니다. 새 업무와 멘션이 오면 메뉴바 아이콘에
-          점이 붙고 알림이 옵니다.</p>
+        <p>오늘 끝낸 업무만큼 진화가 앞당겨집니다. 새 업무와 멘션은 알림으로 옵니다.</p>
       </div>
       <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
         <h3>캘린더</h3>
-        <p>맥 로컬 캘린더나 .ics 구독 주소를 물리면 다음 일정과 회의 중 여부를 알려 줍니다.</p>
+        <p>다음 일정과 회의 중인지를 알려 줍니다. 맥은 시스템 캘린더를 그대로 읽습니다.</p>
       </div>
       <div class="card">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -473,7 +508,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M12 3v4M5.6 5.6l2.8 2.8M3 12h4M5.6 18.4l2.8-2.8M12 21v-4M18.4 18.4l-2.8-2.8M21 12h-4M18.4 5.6l-2.8 2.8"/></svg>
         <h3>바탕화면 캐릭터</h3>
-        <p>원하면 화면 아래쪽을 걸어다니게 할 수 있습니다. 클릭은 그대로 뒤로 지나갑니다.</p>
+        <p>화면 아래쪽을 걸어다니게 할 수 있습니다. 클릭은 캐릭터를 통과해 뒤로 전달됩니다.</p>
       </div>
     </div>
   </div>
@@ -485,10 +520,10 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
     <div class="faq">
       <details><summary>내 기록이 어디로 가나요?</summary>
         <p>내 컴퓨터에만 저장됩니다. 서버로 보내지 않고, 계정도 만들지 않습니다.
-          Flow 를 연결하면 그 자격증명은 OS 의 보안 저장소에 암호화해 둡니다.</p></details>
+          Flow 를 연결하면 그 자격증명은 OS 의 보안 저장소에 암호화되어 보관됩니다.</p></details>
       <details><summary>회사 노트북에 깔아도 되나요?</summary>
         <p>보안 정책은 회사마다 다르니 관리 부서에 확인하시는 편이 안전합니다.
-          Cadence 자체는 화면 내용을 읽거나 키 입력을 기록하지 않습니다 —
+          Cadence 자체는 화면 내용을 읽거나 키 입력을 기록하지 않습니다.
           <strong>입력이 있었는지 없었는지</strong>와 어떤 앱이 앞에 있는지만 봅니다.</p></details>
       <details><summary>무엇을 했는지도 기록되나요?</summary>
         <p>아닙니다. 얼마나 오래, 어떤 리듬으로 일했는지만 남습니다.
@@ -497,8 +532,8 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         <p>그날 하루가 통째로 기록에 보관되고 새 알이 시작됩니다.
           앱이 꺼져 있는 사이에 날짜가 넘어가도 보관됩니다.</p></details>
       <details><summary>목표를 잘못 잡았습니다.</summary>
-        <p>부화 전에는 자유롭게 바꿀 수 있습니다. 부화 후에는 올리기만 됩니다 —
-          이미 자란 캐릭터가 되돌아가지 않게 하기 위해서입니다.</p></details>
+        <p>부화 전에는 자유롭게 바꿀 수 있습니다. 부화 후에는 올릴 수만 있습니다.
+          이미 자란 캐릭터가 다시 작아지지 않도록 하기 위해서입니다.</p></details>
       <details><summary>윈도우 작업표시줄에 아이콘이 안 보입니다.</summary>
         <p>윈도우는 새로 설치한 앱의 트레이 아이콘을 <span class="ui">숨겨진 아이콘</span> 안에 넣습니다.
           작업표시줄 오른쪽의 <span class="ui">﹀</span> 를 누르면 곰 아이콘이 있습니다.
@@ -507,10 +542,16 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           <span class="ui">작업 표시줄</span> → <span class="ui">기타 시스템 트레이 아이콘</span>
           에서 Cadence 를 켜 두세요. 그 뒤로는 작업표시줄에 그대로 붙어 있습니다.</p></details>
       <details><summary>Windows 에서도 똑같이 동작하나요?</summary>
-        <p>캐릭터·시간 기록·도감은 같습니다. 다만 <strong>캘린더</strong>는 다릅니다 —
-          맥은 시스템 캘린더를 바로 읽지만, 윈도우는 캘린더의
+        <p>캐릭터·시간 기록·도감은 같습니다. 다만 <strong>캘린더</strong>는 다릅니다.
+          맥은 시스템 캘린더를 바로 읽지만, 윈도우는
           <code class="cmd">.ics</code> 구독 주소를 한 번 넣어 주셔야 합니다.
           패널의 <span class="ui">캘린더</span> → <span class="ui">연결</span> 에서 넣을 수 있습니다.</p></details>
+      <details><summary>내 그림은 어떤 크기로 넣나요?</summary>
+        <p><b>정사각형</b>으로, 한 변 <b>16px 이상 512px 이하</b>면 됩니다.
+          512px 를 넘으면 앱이 알아서 줄이고, 16px 보다 작으면 받지 않습니다.
+          직사각형을 넣어도 잘라내지 않습니다. 긴 변에 맞춰 투명 여백을 채워 정사각형으로 만듭니다.
+          내장 그림이 48px 픽셀아트라 <b>48px 이나 그 배수(96 · 192)</b>가 가장 또렷합니다.
+          PNG · JPG · WEBP · BMP · GIF 를 받습니다.</p></details>
       <details><summary>설치할 때 경고가 뜹니다.</summary>
         <p>개발자 서명을 아직 받지 않아서입니다(맥 <code>확인되지 않은 개발자</code>,
           윈도우 <code>PC를 보호했습니다</code>). 위 내려받기 칸 아래의 안내대로
