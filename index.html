@@ -106,6 +106,18 @@ a{color:var(--lcd)}
 .bar{height:8px;border-radius:999px;background:var(--bg3);overflow:hidden;margin-top:12px}
 .bar i{display:block;height:100%;width:63%;background:var(--grow);border-radius:999px}
 .shot__cap{margin-top:10px;font-size:12.5px;color:var(--faint)}
+/* 실제 패널을 돌려 찍은 화면. 세로 영상이라 히어로 오른쪽 칸에 그대로 들어간다. */
+.shot__vid{display:block;width:100%;height:auto;max-width:322px;margin:0 auto;
+  border-radius:10px;background:var(--bg3)}
+.shot__still{display:none}
+/* 움직임을 줄여 달라고 한 사람에게는 첫 프레임만 보여준다. 이 페이지엔 JS 가 없으므로
+   재생을 코드로 멈출 수 없다 — 영상을 걷어내고 정지 이미지로 갈아 끼운다. */
+@media (prefers-reduced-motion: reduce){
+  /* 정지 이미지도 .shot__vid 를 함께 쓰므로(크기를 공유한다) 태그로 좁혀야 한다.
+     클래스만 쓰면 규칙 순서에 기대게 된다. */
+  video.shot__vid{display:none}
+  .shot__still{display:block}
+}
 
 /* ── 섹션 공통 ── */
 section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
@@ -315,18 +327,15 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
       </div>
       <p class="hero__meta">무료 · 가입 없음 · 기록은 내 컴퓨터에만</p>
     </div>
-    <div class="shot" role="img"
-         aria-label="Cadence 패널 미리보기. 새끼곰 캐릭터, 오늘 일한 시간 2시간 31분, 목표 4시간의 63퍼센트.">
-      <div class="shot__bar"><i></i><i></i><i></i></div>
-      <div class="shot__row">
-        <div class="shot__pet"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACZklEQVR4nO2ZsUqDMRDH/4q70EHwm0SkSFGwzsXBFxDFRfQROoqDDuIqjh3EWbei+AIO0l2nUkTEqYKD4BPUxSvp10u+y+Uqov1NIc0l/0tyuXwpMGbM/2ZCa1jOSj0qP3U/VP1Y9BFtRINu1xb7dc1WJ0qERR9EVONyVuq5g+ZptjqFAiz6cJmUNvytiD0tmjmCtoIPaR/SVZiSNCpifm6mXz74Lr+8vrPCrElywBXu+811RDL7sYhj4Kn7MeHOYEi8i7QdMQ7iIspZqXewtxY9EBcTLto8YLICp5f3OL28F7dvtjpsQGuycbIDO4fneGi3AUDkBAl/aLdxdHHdr9+uLQ5cLaSoHCjaDqntY4hygEtm1UoF1UolemDOTrMK6i0kndVRzj5gdJmjfU2n0/LqEmt/e3030N7XV0wwm1wlSIhPOLGxtW4x3ABmiYwTt1lvYLPeELXVYuKATzxXDtloiHIgfx8KCblp1NlyyDZ2/wNGMeDDJ9yS6C3ErYIFmtkHDGKAjsaftiVUDuRXQSPEtdHOPpDwLgQMP49IT5Z8QtOKBxIdIPIZ2ueI1ay7mDgA8I9VHBaz7pLciVR4HitHkmMg9aUhdSupj1EL8YD+S4xQvyqHxEuCOI92JUyvEkXHKP1ukcCI6C3km/2Y2yXX9kc/6n8TI/seGIUNx/9bgT93nQbSb6MpJP1LuZBND9Uf7+8G7U7Orobqnruf6mysWgGfeIAXWPTbQjatzsaqPOATT3BCQ44BeifUV4mQEyvzs2z948ub10a7jcxj4Ln7GbTz2WhjQH0X+h5waMkFQjQ2Xr4AFR5FXsA8LNcAAAAASUVORK5CYII=" alt="" width="64" height="64"></div>
-        <div>
-          <div class="shot__t">2시간 31분 <span>/ 목표 4시간</span></div>
-          <div style="font-size:13px;color:var(--dim);margin-top:2px">새끼곰 · 다음 단계까지 1시간 29분</div>
-        </div>
-      </div>
-      <div class="bar"><i></i></div>
-      <p class="shot__cap">메뉴바 아이콘을 누르면 열리는 패널</p>
+    <div class="shot">
+      <video class="shot__vid" width="644" height="916" autoplay muted loop playsinline
+             preload="metadata" poster="cadence-demo-poster.png"
+             aria-label="Cadence 패널을 홈·업무·기록·도감 순서로 넘겨 보는 화면">
+        <source src="cadence-demo.mp4" type="video/mp4">
+      </video>
+      <img class="shot__vid shot__still" src="cadence-demo-poster.png"
+           width="644" height="916" alt="Cadence 패널. 새끼곰 캐릭터와 오늘 일한 시간 2시간 32분, 목표 4시간.">
+      <p class="shot__cap">메뉴바 아이콘을 누르면 열리는 패널 (화면에 보이는 업무는 예시입니다)</p>
     </div>
   </div>
 </section>
