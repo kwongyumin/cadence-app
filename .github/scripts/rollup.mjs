@@ -6,8 +6,11 @@
 //   정지되면 빈칸이 된다. 하루 한 번 여기서 세어 HTML 에 적어 두면 둘 다 없다.
 //   덤으로 이 작업이 매일 DB 를 두드리니 '7일 무활동 정지' 도 안 걸린다.
 //
-// 어제치를 쓰는 이유: 오늘은 아직 안 끝났다. 반쯤 지난 하루의 인원 수를 보여주면
-// 늘 적게 나오고, 늦게 누른 사람은 자기가 빠진 것으로 본다.
+// 어느 하루를 보여주나 (2026-09-14 고침):
+//   처음에는 '어제치' 만 썼다 — 오늘은 아직 안 끝났으니까. 그런데 그러면 **누르고 하루를
+//   넘게 기다려야 보인다.** 실제로 누른 사람이 가이드를 보고 반영이 안 됐다고 했다.
+//   이제 오늘치가 하나라도 있으면 오늘을, 없으면 어제를 보여준다. 자정을 넘긴 직후에도
+//   화면이 0명으로 떨어지지 않고 어제 숫자가 남는다.
 //
 // ⚠ service_role 키를 쓰지 않는다 (2026-09-14).
 //   표를 직접 읽으려면 그 강력한 키를 저장소 비밀에 넣어야 한다. 어차피 사람에게 보여줄
@@ -101,8 +104,18 @@ function dayLabel(day) {
   return `${Number(m)}월 ${Number(d)}일`;
 }
 
-const day = process.env.ROLLUP_DAY || yesterdayKST();
-const c = await counts(day);
+/** KST 기준 오늘 */
+function todayKST(now = new Date()) {
+  return new Date(now.getTime() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
+let day = process.env.ROLLUP_DAY || todayKST();
+let c = await counts(day);
+if (!process.env.ROLLUP_DAY && c.total === 0) {
+  const prev = yesterdayKST();
+  const pc = await counts(prev);
+  if (pc.total > 0) { day = prev; c = pc; }
+}
 const block = html(day, c);
 
 const src = await readFile(FILE, 'utf8');
