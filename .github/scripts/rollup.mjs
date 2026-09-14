@@ -9,20 +9,25 @@
 // 어제치를 쓰는 이유: 오늘은 아직 안 끝났다. 반쯤 지난 하루의 인원 수를 보여주면
 // 늘 적게 나오고, 늦게 누른 사람은 자기가 빠진 것으로 본다.
 //
-// 비밀이 없으면 아무것도 하지 않고 정상 종료한다 — Supabase 를 아직 안 만들었을 때
+// ⚠ service_role 키를 쓰지 않는다 (2026-09-14).
+//   표를 직접 읽으려면 그 강력한 키를 저장소 비밀에 넣어야 한다. 어차피 사람에게 보여줄
+//   것은 숫자뿐이므로, 숫자만 돌려주는 함수(day_counts, security definer)를 공개 키로
+//   부른다. 줄 하나하나는 이 키로 여전히 못 읽는다.
+//
+// 설정이 없으면 아무것도 하지 않고 정상 종료한다 — Supabase 를 아직 안 만들었을 때
 // 매일 실패 메일이 오면 안 된다.
 
 import { readFile, writeFile } from 'node:fs/promises';
 
 const URL_BASE = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
-const KEY = process.env.SUPABASE_SERVICE_KEY || '';
+const KEY = process.env.SUPABASE_ANON_KEY || '';
 const FILE = 'index.html';
 const OPEN = '<!--ROLLUP-->';
 const CLOSE = '<!--/ROLLUP-->';
 const GRADES = ['★★★', '★★', '★'];
 
 if (!URL_BASE || !KEY) {
-  console.log('SUPABASE_URL / SUPABASE_SERVICE_KEY 가 없습니다 — 건너뜁니다');
+  console.log('SUPABASE_URL / SUPABASE_ANON_KEY 가 없습니다 — 건너뜁니다');
   process.exit(0);
 }
 
@@ -35,15 +40,25 @@ function yesterdayKST(now = new Date()) {
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-async function rows(day) {
-  const u = `${URL_BASE}/rest/v1/days?day=eq.${day}&select=filled,grade,rested`;
-  const r = await fetch(u, {
-    headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, Accept: 'application/json' },
+/** @returns {{total:number, filled:number, rested:number, grades:Record<string,number>}} */
+async function counts(day) {
+  const r = await fetch(`${URL_BASE}/rest/v1/rpc/day_counts`, {
+    method: 'POST',
+    headers: {
+      apikey: KEY, Authorization: `Bearer ${KEY}`,
+      'Content-Type': 'application/json', Accept: 'application/json',
+    },
+    body: JSON.stringify({ p_day: day }),
   });
   if (!r.ok) throw new Error(`Supabase ${r.status} ${(await r.text()).slice(0, 200)}`);
   const d = await r.json();
-  if (!Array.isArray(d)) throw new Error('응답이 배열이 아닙니다');
-  return d;
+  // 그날 줄이 없으면 함수가 null 을 돌려준다
+  return {
+    total: Number(d?.total) || 0,
+    filled: Number(d?.filled) || 0,
+    rested: Number(d?.rested) || 0,
+    grades: (d && typeof d.grades === 'object' && d.grades) || {},
+  };
 }
 
 /** 숫자 칸. 크기를 서로 같게 둔다 — 하나만 크면 그게 점수처럼 읽힌다. */
@@ -52,15 +67,15 @@ function card(n, label) {
        + `<div class="tg__k">${esc(label)}</div></div>`;
 }
 
-function html(day, list) {
-  const total = list.length;
+function html(day, c) {
+  const total = c.total;
   if (!total) {
     return `    <p class="dimline">${esc(dayLabel(day))}에는 아직 아무도 더하지 않았습니다.</p>`;
   }
-  const filled = list.filter((x) => x.filled).length;
-  const rested = list.filter((x) => x.rested).length;
-  const byGrade = GRADES.map((g) => [g, list.filter((x) => x.grade === g).length])
-    .filter(([, n]) => n > 0);
+  const filled = c.filled;
+  const rested = c.rested;
+  // 어떤 표시를 셀지는 여기서 정한다 — DB 는 길이만 본다
+  const byGrade = GRADES.map((g) => [g, Number(c.grades[g]) || 0]).filter(([, n]) => n > 0);
 
   // 큰 글씨는 셋만 둔다.
   //   ① 등급을 큰 칸으로 올리면 그게 점수처럼 읽힌다 — 등급은 남과 견줄 것이 아니라
@@ -87,8 +102,8 @@ function dayLabel(day) {
 }
 
 const day = process.env.ROLLUP_DAY || yesterdayKST();
-const list = await rows(day);
-const block = html(day, list);
+const c = await counts(day);
+const block = html(day, c);
 
 const src = await readFile(FILE, 'utf8');
 const a = src.indexOf(OPEN);
@@ -100,8 +115,8 @@ if (a < 0 || b < 0 || b < a) {
 const out = src.slice(0, a + OPEN.length) + '\n' + block + '\n' + src.slice(b);
 
 if (out === src) {
-  console.log(`${day} · ${list.length}명 · 바뀐 것 없음`);
+  console.log(`${day} · ${c.total}명 · 바뀐 것 없음`);
 } else {
   await writeFile(FILE, out);
-  console.log(`${day} · ${list.length}명 · ${FILE} 갱신`);
+  console.log(`${day} · ${c.total}명 · ${FILE} 갱신`);
 }

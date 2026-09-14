@@ -31,7 +31,7 @@ jobs:
       - name: 집계
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           ROLLUP_DAY: ${{ inputs.day }}
         run: node .github/scripts/rollup.mjs
 

@@ -171,6 +171,17 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em
 .guard li+li{margin-top:8px}
 .guard strong{color:var(--ink)}
 .dimline{color:var(--faint);font-size:12.5px}
+/* '오늘 함께' 의 숫자 칸. 등수가 아니라 인원 수라 크기를 서로 같게 둔다 —
+   하나만 크게 하면 그게 점수처럼 읽힌다. */
+.tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:var(--space-2);margin:var(--space-3) 0;max-width:760px}
+@media (max-width:640px){.tg{grid-template-columns:1fr}}
+.tg__c{background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+  padding:16px 18px}
+.tg__n{font-size:28px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.tg__k{margin-top:4px;font-size:12.5px;color:var(--faint)}
+.tg__d{font-size:12.5px;color:var(--faint);margin-bottom:var(--space-2)}
+.tg__g{margin-bottom:10px}
 .dimline a{display:inline-flex;align-items:center;min-height:44px;padding:0 2px}
 .sums{margin-top:var(--space-4);padding-top:var(--space-3);border-top:1px solid var(--line)}
 .sums h4{margin-bottom:8px}
@@ -304,6 +315,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
     <a class="brand" href="#top"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACcUlEQVR4nO1YPUtDMRQ9FXfBQbCTiIh00r04+AdEcRH9CY7ioIO4imMHcdatKP4BB+muUylFSqcnOBT8BTqlpPEluV9tBT1L8/ruTc5JbnLvC/CPf6hQkTquVue//OduMWD1pfV3EDmtVue/9uprI/81Wx0yCa2/jxmuQ9ngALBXX/sxq+PwD8Fe9rLBfTRbneR7ij9nJWaphhzESObESWAiYHlpYdg+8dq9/seIXW72JWDvgRA+ec47K7AEdItBxQ8DCkGOCMlJxF4BJ4JDjGI7sWM0hsvbZ7Kt5WY2EbB/eo2Xdpskotnq4KXdxtnNvcXQ8kQWnjApUGyliUy1Ao7YRq2GjVotaeMjZc+FOoR6/Q+cHG4CwPDXfxfC5QKrnMDe9ZRyYnt3q/T/x/unpJ/kJDItJULiO0cNAMBD42jkfU4IB2bHaIx82C6z1cBEgISQlQhxJs7BhU3YjkGaicdSTjtQiGshCqFwFSSb0veRzj6g2AMaEVbkAcWthENZXqDmAS15wEAAQEtuISzIA0oBrviSlgUuBKcSQpJZj2Him9iSPCAvpQHDiy0tJvI9MC7yDhIR5LjjkJeW0w6cPUG+jF2pzg2f15cXf9hwi7MyMa+992H7rfgkiciGUEg+HAiwqUbDPleqc6RwSgooIx8OqCmLnW9I3oEiIiogRd4hNjAHuT5yIlQfNOfHBxp3kz7MPimnhb8t4OLqTk1A20dUQLcYVN6Kz6RzWT7gItdHLh8kVyAlwg2sueNxvjERlGQmysQxUE8USthQMzGrFqKIAOJCqPFOJQ8Yr4CPMCy4Sc+sFvrtGEsIxTY+x58aQt84W1rQgy3DXQAAAABJRU5ErkJggg==" alt="" width="28" height="28"><b>CADENCE</b></a>
     <nav aria-label="주요">
       <a href="#download">내려받기</a>
+      <a href="#together" class="hide-sm">오늘 함께</a>
       <a href="#how" class="hide-sm">시작하기</a>
       <a href="#features" class="hide-sm">기능</a>
       <a href="#faq" class="hide-sm">FAQ</a>
@@ -325,7 +337,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         <a class="btn btn--primary" href="#download">내려받기</a>
         <a class="btn btn--ghost" href="#how">어떻게 쓰나요</a>
       </div>
-      <p class="hero__meta">무료 · 가입 없음 · 기록은 내 컴퓨터에만</p>
+      <p class="hero__meta">무료 · 가입 없음 · 내 기록은 내 컴퓨터에</p>
     </div>
     <div class="shot">
       <video class="shot__vid" width="644" height="916" autoplay muted loop playsinline
@@ -340,32 +352,51 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
   </div>
 </section>
 
+<!-- '오늘 함께'. 등수를 매기지 않는다 — 일한 시간으로 줄을 세우면 남의 고점이
+     내 기준선이 되고, 1등이 되는 방법은 오래 일하는 것 하나뿐이 된다.
+     숫자는 GitHub Action 이 하루에 한 번 아래 표시 사이를 갈아 끼운다.
+     그래서 이 페이지에는 여전히 JS 가 한 줄도 없다. -->
+<section id="together">
+  <div class="wrap">
+    <div class="sec__head">
+      <h2>오늘 함께</h2>
+      <p>앱에서 「오늘 하루 더하기」를 누른 사람들의 수입니다.
+        등수는 매기지 않고, 누가 더 오래 일했는지도 세지 않습니다.</p>
+    </div>
+<!--ROLLUP-->
+    <p class="dimline">아직 집계가 없습니다.</p>
+<!--/ROLLUP-->
+    <p class="dimline">이름도, 일한 시간도 들어가지 않습니다.
+      목표를 채웠는지 · 등급 · 쉬는 날인지 셋뿐이고, 앱에서 직접 누를 때만 나갑니다.</p>
+  </div>
+</section>
+
 <section id="download">
   <div class="wrap">
     <div class="sec__head">
       <h2>내려받기</h2>
-      <p>버전 0.1.14. 설치 파일만 받으면 됩니다. 계정도, 결제도 없습니다.</p>
+      <p>버전 0.1.15. 설치 파일만 받으면 됩니다. 계정도, 결제도 없습니다.</p>
     </div>
     <div class="dl">
       <div class="card">
         <h3>macOS <span class="tag">Apple Silicon</span></h3>
         <p>M1 이후 맥. macOS 12 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.14-arm64.dmg">.dmg 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.15-arm64.dmg">.dmg 내려받기</a>
       </div>
       <div class="card">
         <h3>macOS <span class="tag">Intel</span></h3>
         <p>인텔 맥. macOS 12 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.14.dmg">.dmg 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.15.dmg">.dmg 내려받기</a>
       </div>
       <div class="card">
         <h3>Windows <span class="tag">64-bit</span></h3>
         <p>대부분의 윈도우 PC. Windows 10 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.14-x64-setup.exe">설치 파일 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.15-x64-setup.exe">설치 파일 내려받기</a>
       </div>
       <div class="card">
         <h3>Windows <span class="tag">ARM</span></h3>
         <p>Snapdragon 같은 ARM 칩을 쓰는 윈도우. 잘 모르겠으면 64-bit 를 받으세요.</p>
-        <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.14-arm64-setup.exe">설치 파일 내려받기</a>
+        <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.15-arm64-setup.exe">설치 파일 내려받기</a>
       </div>
     </div>
     <details class="guard">
@@ -405,12 +436,12 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           <tr><th>맥 터미널</th><td><code class="cmd">shasum -a 256 파일이름</code></td></tr>
         </table>
         <table class="sums__t">
-          <tr><th>Cadence-0.1.14-x64-setup.exe</th><td>009563fa…63c415e1</td></tr>
-          <tr><th>Cadence-0.1.14-arm64-setup.exe</th><td>c4193792…b9a75497</td></tr>
-          <tr><th>Cadence-0.1.14-arm64.dmg</th><td>cef44342…54811de0</td></tr>
-          <tr><th>Cadence-0.1.14.dmg</th><td>0f130d46…0febe2b3</td></tr>
+          <tr><th>Cadence-0.1.15-x64-setup.exe</th><td>e0ac6a86…bef9407a</td></tr>
+          <tr><th>Cadence-0.1.15-arm64-setup.exe</th><td>0100672c…16fc6675</td></tr>
+          <tr><th>Cadence-0.1.15-arm64.dmg</th><td>d8ff59e2…b8f0a9bb</td></tr>
+          <tr><th>Cadence-0.1.15.dmg</th><td>8cddc812…c827d832</td></tr>
         </table>
-        <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.14">릴리스 페이지</a>에 있습니다.</p>
+        <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.15">릴리스 페이지</a>에 있습니다.</p>
       </div>
       </div>
     </details>
@@ -617,9 +648,12 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
     <div class="sec__head"><h2>자주 묻는 것</h2></div>
     <div class="faq">
       <details><summary>내 기록이 어디로 가나요?</summary>
-        <p>내 컴퓨터에만 저장됩니다. 서버로 보내지 않고, 계정도 만들지 않습니다.
+        <p>내 컴퓨터에만 저장됩니다. 계정을 만들지 않고, 기록을 저절로 보내는 길도 없습니다.
           업무 도구를 연결하면 로그인 정보는 맥 키체인과 윈도우 자격 증명 관리자에
-          암호화돼 들어갑니다.</p></details>
+          암호화돼 들어갑니다.</p>
+        <p>딱 하나, 홈 탭의 <b>오늘 하루 더하기</b>를 누르면 그날치 요약이 나갑니다.
+          목표를 채웠는지, 등급, 쉬는 날인지 셋뿐입니다. 일한 시간도, 이름도,
+          무엇을 했는지도 보내지 않습니다. 누르지 않으면 아무것도 나가지 않습니다.</p></details>
       <details><summary>넣은 그림이 네모로 보입니다</summary>
         <p>그림에 배경이 함께 들어와서입니다. 캐릭터만 남기고 배경을 지운
           <b>투명 PNG</b> 로 다시 넣어 주세요. JPG 는 투명도를 담지 못해서
@@ -678,7 +712,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
 
 <footer>
   <div class="wrap">
-    <span>Cadence 0.1.14 · 캐릭터 그림은 직접 그렸습니다</span>
+    <span>Cadence 0.1.15 · 캐릭터 그림은 직접 그렸습니다</span>
     <span><a href="https://github.com/kwongyumin/cadence-app">소스와 이슈</a></span>
   </div>
 </footer>
