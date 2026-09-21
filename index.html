@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cadence · 일한 시간이 캐릭터로 자라는 메뉴바 앱</title>
-<meta name="description" content="맥·윈도우 메뉴바에서 오늘 일한 시간을 재는 앱. 목표를 채우면 픽셀 캐릭터가 자랍니다. 업무 도구·캘린더 연동. 무료.">
+<meta name="description" content="맥·윈도우 메뉴바에서 오늘 일한 시간을 재는 앱. 정한 시간을 채우면 픽셀 캐릭터가 자랍니다. 업무 도구·캘린더 연동. 무료.">
 <meta property="og:title" content="Cadence · 일한 시간이 캐릭터로 자라는 메뉴바 앱">
-<meta property="og:description" content="메뉴바에서 오늘 일한 시간을 재고, 목표를 채우면 캐릭터가 자랍니다.">
+<meta property="og:description" content="메뉴바에서 오늘 일한 시간을 재고, 정한 시간을 채우면 캐릭터가 자랍니다.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACZklEQVR4nO2ZsUqDMRDH/4q70EHwm0SkSFGwzsXBFxDFRfQROoqDDuIqjh3EWbei+AIO0l2nUkTEqYKD4BPUxSvp10u+y+Uqov1NIc0l/0tyuXwpMGbM/2ZCa1jOSj0qP3U/VP1Y9BFtRINu1xb7dc1WJ0qERR9EVONyVuq5g+ZptjqFAiz6cJmUNvytiD0tmjmCtoIPaR/SVZiSNCpifm6mXz74Lr+8vrPCrElywBXu+811RDL7sYhj4Kn7MeHOYEi8i7QdMQ7iIspZqXewtxY9EBcTLto8YLICp5f3OL28F7dvtjpsQGuycbIDO4fneGi3AUDkBAl/aLdxdHHdr9+uLQ5cLaSoHCjaDqntY4hygEtm1UoF1UolemDOTrMK6i0kndVRzj5gdJmjfU2n0/LqEmt/e3030N7XV0wwm1wlSIhPOLGxtW4x3ABmiYwTt1lvYLPeELXVYuKATzxXDtloiHIgfx8KCblp1NlyyDZ2/wNGMeDDJ9yS6C3ErYIFmtkHDGKAjsaftiVUDuRXQSPEtdHOPpDwLgQMP49IT5Z8QtOKBxIdIPIZ2ueI1ay7mDgA8I9VHBaz7pLciVR4HitHkmMg9aUhdSupj1EL8YD+S4xQvyqHxEuCOI92JUyvEkXHKP1ukcCI6C3km/2Y2yXX9kc/6n8TI/seGIUNx/9bgT93nQbSb6MpJP1LuZBND9Uf7+8G7U7Orobqnruf6mysWgGfeIAXWPTbQjatzsaqPOATT3BCQ44BeifUV4mQEyvzs2z948ub10a7jcxj4Ln7GbTz2WhjQH0X+h5waMkFQjQ2Xr4AFR5FXsA8LNcAAAAASUVORK5CYII=">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -333,7 +333,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
       <h1>오늘 일한 시간이<br><em>캐릭터로 자랍니다</em></h1>
       <p class="hero__sub">메뉴바에 켜 두면 앱이 일한 시간을 잽니다.
         키보드와 마우스를 쓰는 동안, 그리고 캘린더에 일정이 잡힌 동안 시간이 쌓입니다.
-        목표를 채우면 알이 깨어납니다.</p>
+        정한 시간을 채우면 알이 깨어납니다.</p>
       <div class="hero__cta">
         <a class="btn btn--primary" href="#download">내려받기</a>
         <a class="btn btn--ghost" href="#how">어떻게 쓰나요</a>
@@ -343,7 +343,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
     <div class="shot">
       <video class="shot__vid" width="644" height="916" autoplay muted loop playsinline
              preload="metadata" poster="cadence-demo-poster.png"
-             aria-label="Cadence 패널을 홈·설정·업무·기록·도감 순서로 넘겨 보는 화면">
+             aria-label="Cadence 패널을 탭마다 넘겨 보는 화면">
         <source src="cadence-demo.mp4" type="video/mp4">
       </video>
       <img class="shot__vid shot__still" src="cadence-demo-poster.png"
@@ -362,13 +362,16 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
     <div class="sec__head">
       <h2>오늘 함께</h2>
       <p>앱에서 「오늘 함께에 나도 넣기」 를 누른 사람의 수입니다.
-        이 페이지는 등수를 매기지 않습니다. 몇 명인지만 셉니다.</p>
+        이 페이지는 몇 명인지만 셉니다.</p>
     </div>
 <!--ROLLUP-->
     <p class="dimline">9월 21일에는 아직 아무도 더하지 않았습니다.</p>
 <!--/ROLLUP-->
-    <p class="dimline">누르면 목표를 채웠는지, 어떤 등급인지, 쉬는 날이었는지가 나갑니다.
-      이름과 일한 시간은 나가지 않습니다. 누르지 않으면 아무것도 나가지 않습니다.</p>
+    <p class="dimline">누르면 정한 시간을 채웠는지, 어떤 등급인지, 쉬는 날이었는지, 그리고 시급 배율이 나갑니다.
+      이름과 일한 시간, 연봉과 금액은 나가지 않습니다. 누르지 않으면 아무것도 나가지 않습니다.</p>
+    <p class="dimline">시급 배율은 정한 시간을 얼마나 적게 앉아서 채웠는지를 나타내는 비율입니다.
+      앱의 기록 탭에서 오늘의 순위를 봅니다. 같은 배율이 연봉 3천만원에서도 2억에서도 나오므로
+      배율만으로는 연봉도 일한 시간도 알 수 없습니다.</p>
   </div>
 </section>
 
@@ -376,28 +379,28 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
   <div class="wrap">
     <div class="sec__head">
       <h2>내려받기</h2>
-      <p>버전 0.1.23. 설치 파일을 받아 실행하면 끝입니다. 계정을 만들지 않습니다.</p>
+      <p>버전 0.1.24. 설치 파일을 받아 실행하면 끝입니다. 계정을 만들지 않습니다.</p>
     </div>
     <div class="dl">
       <div class="card">
         <h3>macOS <span class="tag">Apple Silicon</span></h3>
         <p>M1 이후 맥. macOS 12 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.23-arm64.dmg">.dmg 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.24-arm64.dmg">.dmg 내려받기</a>
       </div>
       <div class="card">
         <h3>macOS <span class="tag">Intel</span></h3>
         <p>인텔 맥. macOS 12 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.23.dmg">.dmg 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.24.dmg">.dmg 내려받기</a>
       </div>
       <div class="card">
         <h3>Windows <span class="tag">64-bit</span></h3>
         <p>대부분의 윈도우 PC. Windows 10 이상.</p>
-        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.23-x64-setup.exe">설치 파일 내려받기</a>
+        <a class="btn btn--primary" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.24-x64-setup.exe">설치 파일 내려받기</a>
       </div>
       <div class="card">
         <h3>Windows <span class="tag">ARM</span></h3>
         <p>Snapdragon 같은 ARM 칩을 쓰는 윈도우. 잘 모르겠으면 64-bit 를 받으세요.</p>
-        <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.23-arm64-setup.exe">설치 파일 내려받기</a>
+        <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.24-arm64-setup.exe">설치 파일 내려받기</a>
       </div>
     </div>
     <details class="guard">
@@ -436,13 +439,8 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           <tr><th>윈도우 PowerShell</th><td><code class="cmd">Get-FileHash 파일이름 -Algorithm SHA256</code></td></tr>
           <tr><th>맥 터미널</th><td><code class="cmd">shasum -a 256 파일이름</code></td></tr>
         </table>
-        <table class="sums__t">
-          <tr><th>Cadence-0.1.23-x64-setup.exe</th><td>5487c282…7d0becaa</td></tr>
-          <tr><th>Cadence-0.1.23-arm64-setup.exe</th><td>7c37b8af…f829ce2a</td></tr>
-          <tr><th>Cadence-0.1.23-arm64.dmg</th><td>c790124f…1f8c33da</td></tr>
-          <tr><th>Cadence-0.1.23.dmg</th><td>0b71ef5f…3e5d4199</td></tr>
-        </table>
-        <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.23">릴리스 페이지</a>에 있습니다.</p>
+
+        <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.24">릴리스 페이지</a>에 있습니다.</p>
       </div>
       </div>
     </details>
@@ -452,17 +450,28 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
 <section id="how">
   <div class="wrap">
     <div class="sec__head">
-      <h2>세 단계면 끝납니다</h2>
-      <p>설치하고 나면 손이 갈 일이 거의 없습니다. 아침에 알 하나 고르는 게 전부입니다.</p>
+      <h2>처음 한 번만 정하면 됩니다</h2>
+      <p>근무 시간대를 넣는 칸은 패널 아래 <span class="ui">설정</span> 안에 접혀 있습니다.
+        펼치기 전에는 안 보이므로, 처음 한 번은 이 순서대로 갑니다.</p>
     </div>
     <ol class="steps">
-      <li><h3>목표 시간을 정한다</h3>
-        <p>30분부터 16시간까지 원하는 만큼. 부화 전에는 언제든 바꿀 수 있습니다.</p></li>
-      <li><h3>알을 고른다</h3>
-        <p>고른 알이 오늘의 동물이 됩니다. 밤빛 알은 곰, 노을 알은 여우입니다.</p></li>
-      <li><h3>일한다</h3>
-        <p>목표의 35% 를 채우면 알이 깨어납니다. 100% 를 채우면 다 자랍니다.</p></li>
+      <li><h3>메뉴바 아이콘을 누른다</h3>
+        <p>맥은 화면 위쪽 막대, 윈도우는 작업표시줄 오른쪽에 곰 아이콘이 있습니다.
+          누르면 패널이 열립니다.</p></li>
+      <li><h3>패널 아래 <span class="ui">설정</span> 을 누른다</h3>
+        <p>평소에는 접혀 있고 옆에 <span class="ui">근무 시간대 · 연봉 · 도구</span> 라고만 적혀 있습니다.
+          누르면 세 칸이 펼쳐집니다.</p></li>
+      <li><h3>출근과 퇴근 시각을 넣는다</h3>
+        <p><span class="ui">09:00</span> 처럼 적습니다. <span class="ui">930</span> 이라고 쳐도 09:30 으로 받고,
+          <span class="ui">9</span> 한 글자만 쳐도 09:00 이 됩니다.</p>
+        <p>칸을 벗어나면 바로 저장됩니다. 두 시각 사이가 오늘 채울 시간이고,
+          30분부터 16시간까지 잡을 수 있습니다. 두 칸을 다 비우면 앱이 알아본 시작 시각으로 돌아갑니다.</p></li>
+      <li><h3>알을 고르고 일한다</h3>
+        <p>고른 알이 오늘의 동물이 됩니다. 밤빛 알은 곰, 노을 알은 여우입니다.</p>
+        <p>정한 시간의 35% 를 채우면 알이 깨어납니다. 100% 를 채우면 다 자랍니다.</p></li>
     </ol>
+    <p class="note">연봉 칸은 같은 <span class="ui">설정</span> 안에 있고 비워 둬도 됩니다.
+      만원 단위로 <span class="ui">5200</span> 처럼 넣으면 일한 시간이 금액으로도 보입니다.</p>
   </div>
 </section>
 
@@ -591,7 +600,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
         일한 시간이 되면 안 되니까요.
         <br><span class="dimline">지금 붙는 것은 Claude Code 입니다.</span></li>
     </ul>
-    <p class="note">업무를 하나 끝낼 때마다 목표의 5% 가 채워집니다.
+    <p class="note">업무를 하나 끝낼 때마다 정한 시간의 5% 가 채워집니다.
       업무 도구를 연결해 두면 오늘 완료한 업무를 앱이 세어 옵니다.
       밤 10시부터 새벽 5시 사이에 쌓인 시간은 야간으로 따로 적힙니다.</p>
   
@@ -652,9 +661,35 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           업무 도구를 연결하면 로그인 정보는 맥 키체인과 윈도우 자격 증명 관리자에
           암호화돼 들어갑니다.</p>
         <p>딱 하나, 홈 탭의 <b>오늘 함께에 나도 넣기</b>를 누르면
-          목표를 채웠는지, 어떤 등급인지, 쉬는 날이었는지가 나갑니다.</p>
-        <p>이름과 일한 시간, 무엇을 했는지는 나가지 않습니다.
+          정한 시간을 채웠는지, 어떤 등급인지, 쉬는 날이었는지, 그리고 시급 배율이 나갑니다.</p>
+        <p>이름과 일한 시간, 무엇을 했는지, 연봉과 금액은 나가지 않습니다.
           누르지 않으면 아무것도 나가지 않습니다.</p></details>
+      <details><summary>시급 배율이 무엇인가요?</summary>
+        <p>정한 시간만큼 앉아서 그 시간을 채우면 <b>×1.00</b> 입니다. 그것이 기준입니다.</p>
+        <p>더 오래 앉아 있으면 1.00 아래로 내려갑니다. 09시부터 13시까지로 정한 날을
+          8시간 앉아서 채우면 ×0.50 입니다. 업무 도구를 연결하면 완료한 일이 시간으로 얹혀서,
+          더 적게 앉고도 그 시간을 채우고 1.00 위로 올라갑니다.</p>
+        <p>적게 앉아서 채울수록 올라가는 숫자입니다. 오래 앉아 있는 것에는 상을 주지 않습니다.</p></details>
+      <details><summary>근무 시간대는 왜 직접 넣나요?</summary>
+        <p>앱은 키보드와 마우스를 보고 시간을 세므로, 9시에 출근해 9시 20분에 첫 타자를 치면
+          9시 20분을 시작으로 봅니다. 매여 있기 시작한 것은 9시입니다.</p>
+        <p>퇴근 시각은 앱이 알 수 없습니다. 넣어 두면 퇴근까지 얼마를 더 버는지 보여줍니다.</p>
+        <p>비워 두면 처음 시간이 쌓인 때를 시작으로 씁니다.</p></details>
+      <details><summary>PC 를 늦게 켠 날은 어떻게 하나요</summary>
+        <p>앱이 그 시간을 채웁니다. 8시부터 일했는데 9시 반에 켰다면 그 1시간 30분이
+          일한 시간에 들어갑니다. 출근 시각을 8시로 넣은 것이 곧 8시부터 일했다는 뜻이라서,
+          앱이 그대로 받아들입니다.</p>
+        <p>그 시간에 일하지 않았다면 출근 시각을 고칩니다. 고치면 다시 계산합니다.</p>
+        <p>채워지는 것은 출근 시각부터 앱이 처음 센 때까지, 그 한 구간뿐입니다.
+          그 뒤로는 손을 놓으면 그대로 멈춥니다.</p></details>
+      <details><summary>연봉을 넣으면 어디에 쓰이나요?</summary>
+        <p>연봉은 이 컴퓨터에만 있습니다. 일한 시간을 금액으로 바꿔 홈에 보여주는 데만 씁니다.
+          메뉴바 글자와 바탕화면 캐릭터에는 금액이 뜨지 않습니다.</p>
+        <p>순위에 나가는 것은 시급 배율뿐입니다. 배율은 정한 시간을 얼마나 적게 앉아서 채웠는지를
+          나타내는 비율이고, 같은 배율이 연봉 3천만원에서도 2억에서도 나옵니다.</p>
+        <p>금액을 누르면 가려집니다. 옆에 사람이 있거나 화면을 공유할 때 씁니다.
+          가려도 시급 배율은 남습니다. 배율은 연봉을 드러내지 않기 때문입니다.</p>
+        <p>연봉 칸을 비우면 금액과 배율이 모두 사라집니다.</p></details>
       <details><summary>넣은 그림이 네모로 보여요</summary>
         <p>그림에 배경이 함께 들어와 있습니다. 캐릭터만 남기고 배경을 지운
           <b>투명 PNG</b> 로 다시 넣어 주세요. JPG 는 투명도를 담지 못해서
@@ -677,11 +712,18 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
       <details><summary>무엇을 했는지도 기록되나요?</summary>
         <p>아닙니다. 얼마나 오래, 어떤 리듬으로 일했는지만 남습니다.
           문서 제목이나 대화 내용은 다루지 않습니다.</p></details>
+      <details><summary>오늘은 쉬는 날이에요</summary>
+        <p>아무것도 안 하면 됩니다. 5분 아래로 일한 하루는 <b>쉰 날</b> 로 남습니다.</p>
+        <p>기록에는 <b>쉼</b> 으로 적히고 등급 대신 그 표시가 남습니다.
+          퇴근 시각을 정해 두면 그 시각이 지난 뒤부터 홈도 쉬는 날이라고 말합니다.</p></details>
+      <details><summary>알부터 다시 를 누르면 어떻게 되나요</summary>
+        <p>패널 맨 아래에 있습니다. 오늘 쌓인 시간과 오늘의 캐릭터가 지워지고 새 알에서 다시 시작합니다.</p>
+        <p>되돌릴 수 없습니다. 지난 날의 기록과 근무 시간대, 연봉은 그대로 남습니다.</p></details>
       <details><summary>자정이 지나면 어떻게 되나요?</summary>
         <p>그날 하루가 통째로 기록에 남고, 새 알에서 다시 시작합니다.
           앱이 꺼져 있는 사이에 날짜가 넘어가도 보관됩니다.</p></details>
-      <details><summary>목표를 잘못 정했어요</summary>
-        <p>부화 전에는 자유롭게 바꿀 수 있습니다. 부화 후에는 올릴 수만 있습니다.
+      <details><summary>근무 시간대를 잘못 정했어요</summary>
+        <p>부화 전에는 자유롭게 바꿀 수 있습니다. 부화 후에는 늘릴 수만 있습니다.
           이미 자란 캐릭터가 도로 작아지면 이상하니까요.</p></details>
       <details><summary>윈도우 작업표시줄에 아이콘이 안 보여요</summary>
         <p>윈도우는 새로 설치한 앱의 트레이 아이콘을 <span class="ui">숨겨진 아이콘</span> 안에 넣습니다.
@@ -713,7 +755,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
 
 <footer>
   <div class="wrap">
-    <span>Cadence 0.1.23 · 캐릭터 그림은 직접 그렸습니다</span>
+    <span>Cadence 0.1.24 · 캐릭터 그림은 직접 그렸습니다</span>
     <span><a href="https://github.com/kwongyumin/cadence-app">소스와 이슈</a></span>
   </div>
 </footer>
