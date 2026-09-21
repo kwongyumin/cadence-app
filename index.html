@@ -21,6 +21,7 @@
   --lcd:#b9c94a; --lcd-ink:#141708; --accent:#7fa650; --grow:#d8a13c;
   --radius:10px; --maxw:960px;
   --space-1:8px; --space-2:16px; --space-3:24px; --space-4:40px; --space-5:64px;
+  --measure:56ch;   /* 읽는 단 하나. 한글은 이보다 길면 줄을 놓친다 */
   --pixel:'Press Start 2P', ui-monospace, monospace;
   /* 폰트 폴백은 글자 하나 단위로 일어난다 — 순서가 곧 '어느 글자를 무엇으로 그리나'다.
      윈도우에서 Segoe UI 를 Malgun Gothic 앞에 둬야 영문은 Segoe UI, 한글은 Malgun 이 된다.
@@ -82,7 +83,7 @@ a{color:var(--lcd)}
 
 /* ── 히어로 ── */
 .hero{padding:var(--space-5) 0 var(--space-4)}
-.hero__grid{display:grid;gap:var(--space-4);align-items:center;
+.hero__grid{display:grid;gap:var(--space-4);align-items:start;
   grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
 @media (max-width:760px){ .hero__grid{grid-template-columns:1fr} }
 .eyebrow{display:inline-block;font:400 10px/1 var(--pixel);color:var(--grow);
@@ -121,7 +122,9 @@ a{color:var(--lcd)}
 
 /* ── 섹션 공통 ── */
 section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
-.sec__head{max-width:56ch;margin-bottom:var(--space-4)}
+.sec__head{max-width:var(--measure);margin-bottom:var(--space-4)}
+/* 읽는 단은 한 종류만 쓴다. 제목 아래 문단만 56ch 이고 본문·FAQ·흐린 줄은 폭이 없어
+   1280px 화면에서 910px(한글 60자/줄)까지 흘렀다. 같은 페이지에 단이 두 개로 보였다. */
 .sec__head h2{font-size:clamp(21px,3.4vw,28px);letter-spacing:-.02em}
 .sec__head p{margin-top:10px;color:var(--dim)}
 
@@ -146,7 +149,7 @@ section{padding:var(--space-5) 0;border-top:1px solid var(--line)}
 .tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;
   background:var(--bg3);color:var(--dim)}
 .tag--soon{background:rgba(216,161,60,.18);color:var(--grow)}
-.note{margin-top:var(--space-3);font-size:13.5px;color:var(--faint);max-width:70ch}
+.note{margin-top:var(--space-3);font-size:13.5px;color:var(--faint);max-width:var(--measure)}
 /* code 는 UA 기본이 monospace 라 한글이 들어가면 띄어쓰기가 두 칸처럼 벌어진다.
    따옴표 대신 쓰는 '화면에 뜨는 문구'는 본문 글꼴로 두고, 진짜 명령어만 monospace 로. */
 code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:.92em;
@@ -170,7 +173,9 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em
 .guard ol{margin:0;padding-left:1.15em;color:var(--dim);font-size:14px}
 .guard li+li{margin-top:8px}
 .guard strong{color:var(--ink)}
-.dimline{color:var(--faint);font-size:12.5px}
+.dimline{color:var(--faint);font-size:12.5px;max-width:var(--measure);line-height:1.7}
+/* 흐린 줄이 여러 개 이어지면 여백 없이는 한 덩어리로 읽힌다. */
+.dimline + .dimline{margin-top:var(--space-2)}
 /* '오늘 함께' 의 숫자 칸. 등수가 아니라 인원 수라 크기를 서로 같게 둔다 —
    하나만 크게 하면 그게 점수처럼 읽힌다. */
 .tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
@@ -209,8 +214,10 @@ code.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em
 .plain b{color:var(--ink)}
 
 /* ── 단계 ── */
+/* 2026-09-21 — 3열에 네 단계를 넣어 넷째 칸이 혼자 둘째 줄에 남았다(293x202).
+   단계가 넷이므로 2열이 맞다. 칸도 넓어져 설명이 덜 접힌다. */
 .steps{counter-reset:s;display:grid;gap:var(--space-2);
-  grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;padding:0;margin:0}
+  grid-template-columns:repeat(2,minmax(0,1fr));list-style:none;padding:0;margin:0}
 @media (max-width:760px){ .steps{grid-template-columns:1fr} }
 .steps li{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);
   padding:var(--space-3);position:relative}
@@ -290,7 +297,7 @@ summary{cursor:pointer;padding:16px var(--space-3);font-weight:700;font-size:15p
 summary::-webkit-details-marker{display:none}
 summary::after{content:'+';margin-left:auto;color:var(--faint);font-weight:400;font-size:20px}
 details[open] summary::after{content:'−'}
-details p{padding:0 var(--space-3) 18px;color:var(--dim);font-size:14.5px}
+details p{padding:0 var(--space-3) 18px;color:var(--dim);font-size:14.5px;max-width:var(--measure);line-height:1.7}
 
 footer{border-top:1px solid var(--line);padding:var(--space-4) 0;color:var(--faint);font-size:13.5px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:space-between;
@@ -343,12 +350,13 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
     <div class="shot">
       <video class="shot__vid" width="644" height="916" autoplay muted loop playsinline
              preload="metadata" poster="cadence-demo-poster.png"
-             aria-label="Cadence 패널을 탭마다 넘겨 보는 화면">
+             aria-label="Cadence 패널의 홈, 설정, 기록, 도감을 차례로 보여주는 화면">
         <source src="cadence-demo.mp4" type="video/mp4">
       </video>
       <img class="shot__vid shot__still" src="cadence-demo-poster.png"
-           width="644" height="916" alt="Cadence 패널. 새끼곰 캐릭터와 오늘 일한 시간 2시간 31분, 목표 4시간.">
-      <p class="shot__cap">메뉴바 아이콘을 누르면 열리는 패널 (화면에 보이는 업무는 예시입니다)</p>
+           width="644" height="916" alt="Cadence 패널. 새끼곰 캐릭터와 오늘 일한 시간 4시간 53분, 근무 9시간.">
+      <p class="shot__cap">메뉴바 아이콘을 누르면 열리는 패널입니다.
+        화면에 보이는 기록과 연봉은 예시로 넣은 값입니다.</p>
     </div>
   </div>
 </section>
@@ -367,11 +375,12 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
 <!--ROLLUP-->
     <p class="dimline">아직 집계가 없습니다.</p>
 <!--/ROLLUP-->
-    <p class="dimline">누르면 정한 시간을 채웠는지, 어떤 등급인지, 쉬는 날이었는지, 그리고 시급 배율이 나갑니다.
-      이름과 일한 시간, 연봉과 금액은 나가지 않습니다. 누르지 않으면 아무것도 나가지 않습니다.</p>
+    <p class="dimline">단추를 누르면 정한 시간을 채웠는지, 어떤 등급인지,
+      쉬는 날이었는지, 시급 배율이 나갑니다.
+      이름과 일한 시간, 연봉과 금액은 나가지 않습니다.</p>
     <p class="dimline">시급 배율은 정한 시간을 얼마나 적게 앉아서 채웠는지를 나타내는 비율입니다.
-      앱의 기록 탭에서 오늘의 순위를 봅니다. 같은 배율이 연봉 3천만원에서도 2억에서도 나오므로
-      배율만으로는 연봉도 일한 시간도 알 수 없습니다.</p>
+      같은 배율이 연봉 3천만원에서도 2억에서도 나옵니다.
+      그래서 배율을 봐도 연봉과 일한 시간은 알 수 없습니다.</p>
   </div>
 </section>
 
@@ -399,7 +408,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
       </div>
       <div class="card">
         <h3>Windows <span class="tag">ARM</span></h3>
-        <p>Snapdragon 같은 ARM 칩을 쓰는 윈도우. 잘 모르겠으면 64-bit 를 받으세요.</p>
+        <p>Snapdragon 같은 ARM 칩을 쓰는 윈도우. 잘 모르겠으면 64-bit를 받으세요.</p>
         <a class="btn btn--ghost" href="https://github.com/kwongyumin/cadence-app/releases/latest/download/Cadence-0.1.24-arm64-setup.exe">설치 파일 내려받기</a>
       </div>
     </div>
@@ -426,7 +435,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           <ol>
             <li><code>확인되지 않은 개발자</code> 로 막히면 앱을 오른쪽 클릭 →
               <span class="ui">열기</span></li>
-            <li>같은 창이 다시 뜨면 이번엔 <span class="ui">열기</span> 가 있습니다</li>
+            <li>같은 창이 다시 뜨면 이번엔 <span class="ui">열기</span>가 있습니다</li>
             <li>그래도 막히면 <span class="ui">시스템 설정</span> →
               <span class="ui">개인정보 보호 및 보안</span> → <span class="ui">확인 없이 열기</span></li>
           </ol>
@@ -439,7 +448,12 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           <tr><th>윈도우 PowerShell</th><td><code class="cmd">Get-FileHash 파일이름 -Algorithm SHA256</code></td></tr>
           <tr><th>맥 터미널</th><td><code class="cmd">shasum -a 256 파일이름</code></td></tr>
         </table>
-
+        <table class="sums__t">
+          <tr><th>Cadence-0.1.24-x64-setup.exe</th><td>d4fae575…32b9439b</td></tr>
+          <tr><th>Cadence-0.1.24-arm64-setup.exe</th><td>a7274281…5f2fa50a</td></tr>
+          <tr><th>Cadence-0.1.24-arm64.dmg</th><td>b7ec5bcd…fcfea6de</td></tr>
+          <tr><th>Cadence-0.1.24.dmg</th><td>b24331b6…c632f63c</td></tr>
+        </table>
         <p class="dimline">전체 값은 <a href="https://github.com/kwongyumin/cadence-app/releases/tag/v0.1.24">릴리스 페이지</a>에 있습니다.</p>
       </div>
       </div>
@@ -458,20 +472,20 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
       <li><h3>메뉴바 아이콘을 누른다</h3>
         <p>맥은 화면 위쪽 막대, 윈도우는 작업표시줄 오른쪽에 곰 아이콘이 있습니다.
           누르면 패널이 열립니다.</p></li>
-      <li><h3>패널 아래 <span class="ui">설정</span> 을 누른다</h3>
+      <li><h3>패널 아래 <span class="ui">설정</span>을 누른다</h3>
         <p>평소에는 접혀 있고 옆에 <span class="ui">근무 시간대 · 연봉 · 도구</span> 라고만 적혀 있습니다.
           누르면 세 칸이 펼쳐집니다.</p></li>
       <li><h3>출근과 퇴근 시각을 넣는다</h3>
-        <p><span class="ui">09:00</span> 처럼 적습니다. <span class="ui">930</span> 이라고 쳐도 09:30 으로 받고,
-          <span class="ui">9</span> 한 글자만 쳐도 09:00 이 됩니다.</p>
-        <p>칸을 벗어나면 바로 저장됩니다. 두 시각 사이가 오늘 채울 시간이고,
-          30분부터 16시간까지 잡을 수 있습니다. 두 칸을 다 비우면 앱이 알아본 시작 시각으로 돌아갑니다.</p></li>
+        <p><span class="ui">09:00</span>처럼 적습니다. <span class="ui">930</span>이라고 쳐도 09:30 으로 받습니다.</p>
+        <p>칸을 벗어나면 바로 저장됩니다. 두 시각 사이가 오늘 채울 시간입니다.</p></li>
       <li><h3>알을 고르고 일한다</h3>
         <p>고른 알이 오늘의 동물이 됩니다. 밤빛 알은 곰, 노을 알은 여우입니다.</p>
         <p>정한 시간의 35% 를 채우면 알이 깨어납니다. 100% 를 채우면 다 자랍니다.</p></li>
     </ol>
-    <p class="note">연봉 칸은 같은 <span class="ui">설정</span> 안에 있고 비워 둬도 됩니다.
-      만원 단위로 <span class="ui">5200</span> 처럼 넣으면 일한 시간이 금액으로도 보입니다.</p>
+    <p class="note">근무 시간대는 30분부터 16시간까지 잡을 수 있습니다.
+      두 칸을 다 비우면 앱이 알아본 시작 시각으로 돌아갑니다.
+      연봉 칸도 같은 <span class="ui">설정</span> 안에 있고 비워 둬도 됩니다.
+      만원 단위로 <span class="ui">5200</span>처럼 넣으면 일한 시간이 금액으로도 보입니다.</p>
   </div>
 </section>
 
@@ -727,7 +741,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
           이미 자란 캐릭터가 도로 작아지면 이상하니까요.</p></details>
       <details><summary>윈도우 작업표시줄에 아이콘이 안 보여요</summary>
         <p>윈도우는 새로 설치한 앱의 트레이 아이콘을 <span class="ui">숨겨진 아이콘</span> 안에 넣습니다.
-          작업표시줄 오른쪽의 <span class="ui">﹀</span> 를 누르면 곰 아이콘이 있습니다.
+          작업표시줄 오른쪽의 <span class="ui">﹀</span>를 누르면 곰 아이콘이 있습니다.
           매번 두 번 누르기 번거로우면
           <span class="ui">설정</span> → <span class="ui">개인 설정</span> →
           <span class="ui">작업 표시줄</span> → <span class="ui">기타 시스템 트레이 아이콘</span>
